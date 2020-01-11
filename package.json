@@ -1,0 +1,17 @@
+{
+  "name": "f-calculus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests.js"
+  },
+  "dependencies": {
+    "arcsecond": "^1.3.0"
+  },
+  "devDependencies": {
+    "@pmoo/testy": "^4.3.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

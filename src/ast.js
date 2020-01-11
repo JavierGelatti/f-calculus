@@ -42,6 +42,10 @@ class Expression {
     replace(toBeReplaced, replacement) {
         throw 'subclass responsibility'
     }
+
+    unsugar() {
+        return this
+    }
 }
 
 class Hole extends Expression{
@@ -281,6 +285,13 @@ class LetExpression extends Expression {
             this.variable.equals(anotherLet.variable) &&
             this.value.equals(anotherLet.value) &&
             this.expression.equals(anotherLet.expression)
+    }
+
+    unsugar() {
+        return application(
+            lambda(this.variable, this.expression.unsugar()),
+            this.value.unsugar()
+        )
     }
 }
 

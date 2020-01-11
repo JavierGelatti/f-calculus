@@ -11,6 +11,10 @@ suite('Parser', () => {
         assert.that(parseExpression("λx.x")).isEqualTo(lambda(variable("x"), variable("x")))
     })
 
+    test('lambdas with spaces', () => {
+        assert.that(parseExpression("λx . x")).isEqualTo(lambda(variable("x"), variable("x")))
+    })
+
     test('application', () => {
         assert.that(parseExpression("x y")).isEqualTo(application(variable("x"), variable("y")))
     })

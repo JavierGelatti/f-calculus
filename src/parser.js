@@ -1,4 +1,4 @@
-const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, many } = require('arcsecond')
+const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many } = require('arcsecond')
 const { Variable, Abstraction, Application, Hole, LetExpression } = require('./ast')
 
 const whitespace = anyOfString(' \n\t\r')
@@ -12,7 +12,7 @@ const expressionParser = recursiveParser(() => pipeParsers([
 const variableParser = pipeParsers([
     sequenceOf([
         maybeWhitespaces,
-        many1(choice([digit, letter]))
+        many1(anythingExcept(choice([ anyOfString(' \n\t\r.\\λ()='), endOfInput ])))
     ]),
     mapTo(([whitespace, variableName]) => new Variable(variableName.join('')))
 ])
@@ -42,9 +42,9 @@ const letParser = pipeParsers([
 const lambdaParser = pipeParsers([
     sequenceOf([
         maybeWhitespaces,
-        char('λ'),
+        anyOfString('λ\\'),
         variableParser,
-        char('.'),
+        token('.'),
         expressionParser,
     ]),
     mapTo(([whitespace, lambda, variable, dot, body]) => new Abstraction(variable, body))

@@ -297,6 +297,10 @@ class LetExpression extends Expression {
             this.value.unsugar()
         )
     }
+
+    toString() {
+        return `let ${this.variable.toString()} = ${this.value.toString()}. ${this.expression.toString()}`
+    }
 }
 
 function variable(name) {

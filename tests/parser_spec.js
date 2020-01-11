@@ -15,6 +15,15 @@ suite('Parser', () => {
         assert.that(parseExpression("x y")).isEqualTo(application(variable("x"), variable("y")))
     })
 
+    test('application with whitespace', () => {
+        assert.that(parseExpression("x\n  y\n  z")).isEqualTo(
+            application(
+                application(variable("x"), variable("y")),
+                variable("z")
+            )
+        )
+    })
+
     test('application inside lambda', () => {
         assert.that(parseExpression("λx.x x")).isEqualTo(lambda(variable("x"), application(variable("x"), variable("x"))))
     })

@@ -1,5 +1,9 @@
-const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, whitespace } = require('arcsecond')
+const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, many } = require('arcsecond')
 const { Variable, Abstraction, Application, Hole, LetExpression } = require('./ast')
+
+const whitespace = anyOfString(' \n\t\r')
+const maybeWhitespaces = many(whitespace).map(x => x.join(''))
+const whitespaces = many1(whitespace).map(x => x.join(''))
 
 const expressionParser = recursiveParser(() => pipeParsers([
     choice([letParser, applicationParser, lambdaParser, variableParser, parenthesesParser, holeParser])
@@ -7,7 +11,7 @@ const expressionParser = recursiveParser(() => pipeParsers([
 
 const variableParser = pipeParsers([
     sequenceOf([
-        whitespace,
+        maybeWhitespaces,
         many1(choice([digit, letter]))
     ]),
     mapTo(([whitespace, variableName]) => new Variable(variableName.join('')))
@@ -16,7 +20,7 @@ const variableParser = pipeParsers([
 const token = (string) => {
     return pipeParsers([
         sequenceOf([
-            whitespace,
+            maybeWhitespaces,
             str(string)
         ]),
         mapTo(([whitespace, readString]) => readString)
@@ -37,7 +41,7 @@ const letParser = pipeParsers([
 
 const lambdaParser = pipeParsers([
     sequenceOf([
-        whitespace,
+        maybeWhitespaces,
         char('λ'),
         variableParser,
         char('.'),
@@ -47,16 +51,16 @@ const lambdaParser = pipeParsers([
 ])
 
 const holeParser = pipeParsers([
-    sequenceOf([ whitespace, char('_')]),
+    sequenceOf([ maybeWhitespaces, char('_')]),
     mapTo(([whitespace, underscore]) => new Hole())
 ])
 
 const parenthesesParser = pipeParsers([
     sequenceOf([
-        whitespace,
+        maybeWhitespaces,
         char('('),
         expressionParser,
-        whitespace,
+        maybeWhitespaces,
         char(')'),
     ]),
     mapTo(([whitespace0, openParen, expression, whitespace1, closingParen]) => expression)
@@ -65,7 +69,7 @@ const parenthesesParser = pipeParsers([
 const applicationParser = pipeParsers([
     sequenceOf([
         choice([lambdaParser, variableParser, parenthesesParser, holeParser]),
-        sepBy1 (char(" ")) (choice([lambdaParser, variableParser, parenthesesParser, holeParser]))
+        sepBy1 (whitespaces) (choice([lambdaParser, variableParser, parenthesesParser, holeParser]))
     ]),
     mapTo(([abstraction, args]) => {
         const applications = [abstraction, ...args]

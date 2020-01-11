@@ -287,6 +287,10 @@ class LetExpression extends Expression {
             this.expression.equals(anotherLet.expression)
     }
 
+    betaReduced() {
+        return this.unsugar().betaReduced()
+    }
+
     unsugar() {
         return application(
             lambda(this.variable, this.expression.unsugar()),

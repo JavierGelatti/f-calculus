@@ -1,6 +1,6 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { variable, application, lambda, apply } = require('../src/ast')
+const { variable, application, lambda, apply, letExpression } = require('../src/ast')
 
 suite('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {
@@ -113,5 +113,15 @@ suite('Beta reduction', () => {
         let abstraction = lambda(variable("x"), variable("y"))
 
         assert.that(() => abstraction.alphaConvert("y")).raises("The variable y is free in the body")
+    })
+
+    test('let expressions', () => {
+        const letExpr = letExpression(
+            variable("x"),
+            lambda(variable("y"), variable("y")),
+            application(variable("x"), variable("z"))
+        );
+
+        assert.that(letExpr.fullBetaReduce()).isEqualTo(variable("z"));
     })
 })

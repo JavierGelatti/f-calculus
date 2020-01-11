@@ -1,5 +1,5 @@
 const { suite, test, assert } = require('@pmoo/testy')
-const { variable, application, lambda } = require('../src/ast')
+const { variable, application, lambda, letExpression } = require('../src/ast')
 const { parseExpression } = require('../src/parser')
 
 suite('Parser', () => {
@@ -47,5 +47,27 @@ suite('Parser', () => {
     test('nested parentheses', () => {
         assert.that(parseExpression("((λx.((x))))")).
             isEqualTo(lambda(variable("x"), variable("x")))
+    })
+
+    test('parses let expressions', () => {
+        assert.that(parseExpression("let x = y. x")).
+        isEqualTo(
+            letExpression(
+                variable("x"),
+                variable("y"),
+                variable("x")
+            )
+        )
+    })
+
+    test('ignores whitespace in let expressions', () => {
+        assert.that(parseExpression("let  x  =  y  .   \n\nx")).
+            isEqualTo(
+                letExpression(
+                    variable("x"),
+                    variable("y"),
+                    variable("x")
+                )
+            )
     })
 })

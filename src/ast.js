@@ -268,6 +268,22 @@ class Application extends Expression {
     }
 }
 
+class LetExpression extends Expression {
+    constructor(variable, value, expression) {
+        super()
+        this.variable = variable;
+        this.value = value;
+        this.expression = expression;
+    }
+
+    equals(anotherLet) {
+        return anotherLet instanceof LetExpression &&
+            this.variable.equals(anotherLet.variable) &&
+            this.value.equals(anotherLet.value) &&
+            this.expression.equals(anotherLet.expression)
+    }
+}
+
 function variable(name) {
     return new Variable(name)
 }
@@ -292,4 +308,8 @@ function hole() {
     return new Hole()
 }
 
-module.exports = { Variable, Abstraction, Application, Hole, variable, variableTBD, application, lambda, hole, apply }
+function letExpression(variable, value, expression) {
+    return new LetExpression(variable, value, expression);
+}
+
+module.exports = { Variable, Abstraction, Application, Hole, LetExpression, variable, variableTBD, letExpression, application, lambda, hole, apply }

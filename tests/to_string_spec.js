@@ -32,5 +32,6 @@ suite('string representation', () => {
         assert.that(parseExpression("(λf.(λx.f (f x)))").asNumber()).isEqualTo(2)
         assert.that(parseExpression("(λx.x)").asNumber()).isEqualTo(1)
         assert.that(parseExpression("(λx.(λf.(λx.f x)))").asNumber() === undefined).isTrue()
+        assert.that(parseExpression("(λf.(λx.f))").asNumber() === undefined).isTrue()
     })
 })

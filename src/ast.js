@@ -206,10 +206,16 @@ class Abstraction extends Expression {
     }
 
     asNumber() {
-        return application(
+        const value = application(
             application(this, new JsValue(x => x + 1)),
             new JsValue(0)
-        ).fullBetaReduce().value
+        ).fullBetaReduce().value;
+
+        if (typeof value === 'number') {
+            return value
+        } else {
+            return undefined
+        }
     }
 
     accept(visitor) {

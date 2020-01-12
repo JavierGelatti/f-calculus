@@ -10,7 +10,7 @@
     "arcsecond": "^2.0.3"
   },
   "devDependencies": {
-    "@pmoo/testy": "^4.3.0"
+    "@pmoo/testy": "javiergelatti/testy#develop"
   },
   "author": "",
   "license": "MIT"

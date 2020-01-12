@@ -17,6 +17,8 @@ function prompt(text) {
     });
 }
 
+let backlog = ''
+
 function repl() {
     prompt(`${bold}${cyan}λ${off} `).then(code => {
         if (code === 'exit') {
@@ -25,10 +27,16 @@ function repl() {
             return;
         }
 
-        const expression = parseExpression(code)
-
-        if (expression instanceof Array) {
-            throw expression[1]
+        let expression
+        try {
+            expression = parseExpression(backlog + code)
+        } catch(ex) {
+            if (validSyntax(code + '._')) {
+                backlog += code + '.'
+                return
+            } else {
+                throw ex
+            }
         }
 
         const result = expression.fullBetaReduce()
@@ -36,6 +44,15 @@ function repl() {
     }).catch(error => {
         console.log(error);
     }).then(repl)
+}
+
+function validSyntax(text) {
+    try {
+        parseExpression(text)
+        return true
+    } catch(ex) {
+        return false
+    }
 }
 
 repl()

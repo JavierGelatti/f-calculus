@@ -4,6 +4,11 @@ const readline = require('readline').createInterface({
     output: process.stdout
 })
 
+// Colors and emphasis
+const off = '\x1b[0m';
+const bold = '\x1b[1m';
+const cyan = '\x1b[36m';
+
 function prompt(text) {
     return new Promise(accept => {
         readline.question(text, (input) => {
@@ -13,7 +18,7 @@ function prompt(text) {
 }
 
 function repl() {
-    prompt('λ ').then(code => {
+    prompt(`${bold}${cyan}λ${off} `).then(code => {
         if (code === 'exit') {
             readline.close()
             console.log('bye!')

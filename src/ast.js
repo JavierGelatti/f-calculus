@@ -181,7 +181,7 @@ class Abstraction extends Expression {
 
     alphaConvert(newVariableName) {
         let newVariable = variable(newVariableName);
-        if (includes(this.body.freeVariables(), newVariable)) throw "The variable " + newVariableName + " is free in the body"
+        if (includes(this.body.freeVariables(), newVariable)) throw new Error("The variable " + newVariableName + " is free in the body")
         return new Abstraction(newVariable, this.body.replaceFreeVariable(this.boundVariable, newVariable))
     }
 

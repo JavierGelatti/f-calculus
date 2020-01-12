@@ -112,7 +112,7 @@ suite('Beta reduction', () => {
     test('alpha conversion error', () => {
         let abstraction = lambda(variable("x"), variable("y"))
 
-        assert.that(() => abstraction.alphaConvert("y")).raises("The variable y is free in the body")
+        assert.that(() => abstraction.alphaConvert("y")).raises(/The variable y is free in the body/)
     })
 
     test('let expressions', () => {

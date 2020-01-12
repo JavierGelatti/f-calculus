@@ -34,4 +34,8 @@ suite('string representation', () => {
         assert.that(parseExpression("(λx.(λf.(λx.f x)))").asNumber()).isUndefined()
         assert.that(parseExpression("(λf.(λx.f))").asNumber()).isUndefined()
     })
+
+    test('infix operators', () => {
+        assert.that(parseExpression("x + y").toString()).isEqualTo('x + y')
+    })
 })

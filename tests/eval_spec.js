@@ -1,6 +1,6 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { variable, application, lambda, apply, letExpression, number } = require('../src/ast')
+const { variable, application, infixApplication, lambda, apply, letExpression, number } = require('../src/ast')
 
 suite('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {
@@ -133,5 +133,14 @@ suite('Beta reduction', () => {
             number(0)
         )
         assert.that(expr.fullBetaReduce()).isEqualTo(lambda(variable('y'), number(0)))
+    })
+
+    test('infix operators', () => {
+        const expr = letExpression(
+            variable("+"),
+            lambda(variable("y"), lambda(variable("x"), variable("y"))),
+            infixApplication(variable("+"), variable("v"), variable("w"))
+        )
+        assert.that(expr.fullBetaReduce()).isEqualTo(variable('v'))
     })
 })

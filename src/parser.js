@@ -1,19 +1,30 @@
-const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
-const { Variable, Abstraction, Application, Hole, LetExpression, NumberLiteral } = require('./ast')
+const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, lookAhead, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
+const { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral } = require('./ast')
 
 const expressionParser = recursiveParser(() => pipeParsers([
-    choice([letParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser])
+    choice([letParser, infixApplicationParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser])
 ]))
 
 const invalidCharactersInIdentifiers = [anyOfString(' \n\t\r.\\λ()='), endOfInput];
 const variableParser = pipeParsers([
     sequenceOf([
         optionalWhitespace,
-        anythingExcept(choice([...invalidCharactersInIdentifiers, digit])),
+        letter,
         many(anythingExcept(choice(invalidCharactersInIdentifiers)))
     ]),
     mapTo(([whitespace, startOfVariable, restOfVariable]) => new Variable([startOfVariable, ...restOfVariable].join('')))
 ])
+
+const infixOperatorParser = pipeParsers([
+    sequenceOf([
+        optionalWhitespace,
+        anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])),
+        many(anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])))
+    ]),
+    mapTo(([whitespace, startOfVariable, restOfVariable]) => new Variable([startOfVariable, ...restOfVariable].join('')))
+])
+
+const fullVariableParser = choice([variableParser, infixOperatorParser])
 
 const numberParser = pipeParsers([
     sequenceOf([
@@ -36,7 +47,7 @@ const token = (string) => {
 const letParser = pipeParsers([
     sequenceOf([
         token('let'),
-        variableParser,
+        fullVariableParser,
         token('='),
         expressionParser,
         token('.'),
@@ -49,7 +60,7 @@ const lambdaParser = pipeParsers([
     sequenceOf([
         optionalWhitespace,
         anyOfString('λ\\'),
-        variableParser,
+        fullVariableParser,
         token('.'),
         expressionParser,
     ]),
@@ -75,11 +86,32 @@ const parenthesesParser = pipeParsers([
 const applicationParser = pipeParsers([
     sequenceOf([
         choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
-        sepBy1(whitespace)(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))
+        sepBy1(
+            sequenceOf([whitespace, lookAhead(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))])
+        )(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))
     ]),
     mapTo(([abstraction, args]) => {
-        const applications = [abstraction, ...args]
-        return applications.reduce((previousApplication, currentArgument) => new Application(previousApplication, currentArgument))
+        return args.reduce(
+            (previousApplication, currentArgument) => new Application(previousApplication, currentArgument),
+            abstraction
+        )
+    })
+])
+
+const infixApplicationParser = pipeParsers([
+    sequenceOf([
+        choice([applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
+        many1(sequenceOf([
+            takeRight(optionalWhitespace)(infixOperatorParser),
+            choice([applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
+        ]))
+    ]),
+    mapTo(([firstArgument, rest]) => {
+        return rest.reduce(
+            (previousApplication, [currentOperator, currentSecondArgument]) =>
+                new InfixApplication(currentOperator, previousApplication, currentSecondArgument),
+            firstArgument
+        )
     })
 ])
 
@@ -87,12 +119,18 @@ function parseExpression(text) {
     const completeExpression = pipeParsers([
         sequenceOf([
             expressionParser,
+            optionalWhitespace,
             endOfInput
         ]),
         mapTo(x => x[0])
     ])
 
-    return parse(completeExpression)(text).result
+    const parseResult = parse(completeExpression)(text)
+    if (parseResult.isError) {
+        throw new Error(parseResult.error)
+    }
+
+    return parseResult.result
 }
 
 module.exports = { parseExpression }

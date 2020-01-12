@@ -376,6 +376,30 @@ class LetExpression extends SugarExpression {
     }
 }
 
+class InfixApplication extends SugarExpression {
+    constructor(operator, firstArgument, secondArgument) {
+        super()
+        this.operator = operator
+        this.firstArgument = firstArgument
+        this.secondArgument = secondArgument
+    }
+
+    equals(other) {
+        return other instanceof InfixApplication &&
+            this.operator.equals(other.operator) &&
+            this.firstArgument.equals(other.firstArgument) &&
+            this.secondArgument.equals(other.secondArgument)
+    }
+
+    unsugar() {
+        return application(application(this.operator, this.firstArgument), this.secondArgument)
+    }
+
+    toString() {
+        return `${this.firstArgument.toString()} ${this.operator.toString()} ${this.secondArgument.toString()}`
+    }
+}
+
 class NumberLiteral extends SugarExpression {
     constructor(value) {
         if (typeof value !== 'number') throw new Error(`${value} is not a number`)
@@ -437,6 +461,10 @@ function application(abstraction, argument) {
     return new Application(abstraction, argument)
 }
 
+function infixApplication(abstraction, argument1, argument2) {
+    return new InfixApplication(abstraction, argument1, argument2)
+}
+
 function apply(abstraction, argument) {
     return application(abstraction, argument).betaReduced()
 }
@@ -453,4 +481,4 @@ function subclassResponsibility(object, methodName) {
     throw new Error(`${object.constructor.name}#${methodName}: subclass responsibility`)
 }
 
-module.exports = { Variable, Abstraction, Application, Hole, LetExpression, NumberLiteral, number, variable, variableTBD, letExpression, application, lambda, hole, apply }
+module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, number, variable, variableTBD, letExpression, application, infixApplication, lambda, hole, apply }

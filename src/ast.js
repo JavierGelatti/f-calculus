@@ -12,40 +12,41 @@ class Expression {
     }
 
     betaReduced() {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'betaReduced')
     }
 
     equals(other) {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'equals')
     }
 
     freeVariables() {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'freeVariables')
     }
 
     replaceFreeVariable(oldVariable, newValue) {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'replaceFreeVariable')
     }
 
     applyTo(argument) {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'applyTo')
     }
 
     toString() {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'toString')
     }
 
     accept(visitor) {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'accept')
     }
 
     replace(toBeReplaced, replacement) {
-        throw 'subclass responsibility'
+        subclassResponsibility(this, 'replace')
     }
 
     unsugar() {
         return this
     }
+
 }
 
 class Hole extends Expression{
@@ -332,7 +333,7 @@ class SugarExpression extends Expression {
     }
 
     unsugar() {
-        throw 'subclass respo'
+        subclassResponsibility(this, 'unsugar')
     }
 
     freeVariables() {
@@ -446,6 +447,10 @@ function hole() {
 
 function letExpression(variable, value, expression) {
     return new LetExpression(variable, value, expression);
+}
+
+function subclassResponsibility(object, methodName) {
+    throw new Error(`${object.constructor.name}#${methodName}: subclass responsibility`)
 }
 
 module.exports = { Variable, Abstraction, Application, Hole, LetExpression, NumberLiteral, number, variable, variableTBD, letExpression, application, lambda, hole, apply }

@@ -197,7 +197,19 @@ class Abstraction extends Expression {
     }
 
     toString() {
-        return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
+        const asNumber = this.asNumber();
+        if (asNumber === undefined) {
+            return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
+        } else {
+            return asNumber.toString()
+        }
+    }
+
+    asNumber() {
+        return application(
+            application(this, new JsValue(x => x + 1)),
+            new JsValue(0)
+        ).fullBetaReduce().value
     }
 
     accept(visitor) {
@@ -213,6 +225,42 @@ class Abstraction extends Expression {
                 this.body.replace(toBeReplaced, replacement)
             )
         }
+    }
+}
+
+class JsValue extends Expression {
+    constructor(jsValue) {
+        super()
+        this.value = jsValue
+    }
+
+    freeVariables() {
+        return []
+    }
+
+    equals(anotherJsValue) {
+        return anotherJsValue instanceof JsValue &&
+            this.value === anotherJsValue.value
+    }
+
+    replaceFreeVariable(oldVariable, newValue) {
+        return this
+    }
+
+    betaReduced() {
+        return this;
+    }
+
+    applyTo(anArgument) {
+        if (this.value instanceof Function && anArgument instanceof JsValue) {
+            return new JsValue(this.value(anArgument.value))
+        } else {
+            return application(anArgument, this)
+        }
+    }
+
+    toString() {
+        return `jsValue: ${this.value.toString()}`
     }
 }
 
@@ -272,7 +320,29 @@ class Application extends Expression {
     }
 }
 
-class LetExpression extends Expression {
+class SugarExpression extends Expression {
+    betaReduced() {
+        return this.unsugar().betaReduced()
+    }
+
+    unsugar() {
+        throw 'subclass respo'
+    }
+
+    freeVariables() {
+        return this.unsugar().freeVariables()
+    }
+
+    replaceFreeVariable(oldVariable, newValue) {
+        return this.unsugar().replaceFreeVariable(oldVariable, newValue)
+    }
+
+    applyTo(argument) {
+        return this.unsugar().applyTo(argument)
+    }
+}
+
+class LetExpression extends SugarExpression {
     constructor(variable, value, expression) {
         super()
         this.variable = variable;
@@ -287,10 +357,6 @@ class LetExpression extends Expression {
             this.expression.equals(anotherLet.expression)
     }
 
-    betaReduced() {
-        return this.unsugar().betaReduced()
-    }
-
     unsugar() {
         return application(
             lambda(this.variable, this.expression.unsugar()),
@@ -303,12 +369,57 @@ class LetExpression extends Expression {
     }
 }
 
+class NumberLiteral extends SugarExpression {
+    constructor(value) {
+        if (typeof value !== 'number') throw new Error(`${value} is not a number`)
+        super()
+        this.value = value
+    }
+
+    equals(anotherNumber) {
+        return anotherNumber instanceof NumberLiteral &&
+            this.value === anotherNumber.value
+    }
+
+    unsugar() {
+        let body = variable('x')
+        for (let i = 0; i < this.value; i++) {
+            body = application(variable('f'), body)
+        }
+        return lambda(variable('f'), lambda(variable('x'), body))
+    }
+
+    toString() {
+        return this.value.toString()
+    }
+
+    applyTo(argument) {
+        if (argument instanceof NumberLiteral) {
+            return new NumberLiteral(Math.pow(argument.value, this.value))
+        } else {
+            return this.unsugar().applyTo(argument)
+        }
+    }
+
+    freeVariables() {
+        return []
+    }
+
+    replaceFreeVariable(oldVariable, newValue) {
+        return this
+    }
+}
+
 function variable(name) {
     return new Variable(name)
 }
 
 function variableTBD() {
     return new VariableTBD()
+}
+
+function number(value) {
+    return new NumberLiteral(value)
 }
 
 function lambda(variable, body) {
@@ -331,4 +442,4 @@ function letExpression(variable, value, expression) {
     return new LetExpression(variable, value, expression);
 }
 
-module.exports = { Variable, Abstraction, Application, Hole, LetExpression, variable, variableTBD, letExpression, application, lambda, hole, apply }
+module.exports = { Variable, Abstraction, Application, Hole, LetExpression, NumberLiteral, number, variable, variableTBD, letExpression, application, lambda, hole, apply }

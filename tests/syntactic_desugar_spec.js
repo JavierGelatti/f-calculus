@@ -1,6 +1,6 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { variable, application, lambda, apply, letExpression, hole } = require('../src/ast')
+const { variable, application, lambda, apply, letExpression, hole, number } = require('../src/ast')
 
 suite('syntatic unsugaring', () => {
     test('let expressions are transformed into applications', () => {
@@ -60,6 +60,22 @@ suite('syntatic unsugaring', () => {
                     lambda(variable('u'), variable('w')),
                     variable('v')
                 )
+            )
+        )
+    })
+
+    test('can unsugar zero', () => {
+        assert.that(number(0).unsugar()).isEqualTo(
+            lambda(variable('f'),
+                lambda(variable('x'), variable('x'))
+            )
+        )
+    })
+
+    test('can unsugar integers greater than zero', () => {
+        assert.that(number(2).unsugar()).isEqualTo(
+            lambda(variable('f'),
+                lambda(variable('x'), application(variable('f'), application(variable('f'), variable('x'))))
             )
         )
     })

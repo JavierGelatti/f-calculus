@@ -1,10 +1,14 @@
 const { suite, test, assert } = require('@pmoo/testy')
-const { variable, application, lambda, letExpression } = require('../src/ast')
+const { variable, application, lambda, letExpression , number } = require('../src/ast')
 const { parseExpression } = require('../src/parser')
 
 suite('Parser', () => {
     test('variables', () => {
         assert.that(parseExpression("asd")).isEqualTo(variable("asd"))
+    })
+
+    test('variables with numbers', () => {
+        assert.that(parseExpression("asd123")).isEqualTo(variable("asd123"))
     })
 
     test('lambdas', () => {
@@ -82,5 +86,22 @@ suite('Parser', () => {
                     variable("x")
                 )
             )
+    })
+
+    test('number literals', () => {
+        assert.that(parseExpression("12")).
+        isEqualTo(
+            number(12)
+        )
+    })
+
+    test('number literals in applications', () => {
+        assert.that(parseExpression("1 2 3")).
+        isEqualTo(
+            application(
+                application(number(1), number(2)),
+                number(3)
+            )
+        )
     })
 })

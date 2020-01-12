@@ -1,20 +1,30 @@
 const { endOfInput, parse, digit, letter, char, choice, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many } = require('arcsecond')
-const { Variable, Abstraction, Application, Hole, LetExpression } = require('./ast')
+const { Variable, Abstraction, Application, Hole, LetExpression, NumberLiteral } = require('./ast')
 
 const whitespace = anyOfString(' \n\t\r')
 const maybeWhitespaces = many(whitespace).map(x => x.join(''))
 const whitespaces = many1(whitespace).map(x => x.join(''))
 
 const expressionParser = recursiveParser(() => pipeParsers([
-    choice([letParser, applicationParser, lambdaParser, variableParser, parenthesesParser, holeParser])
+    choice([letParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser])
 ]))
 
+const invalidCharactersInIdentifiers = [ anyOfString(' \n\t\r.\\λ()='), endOfInput ];
 const variableParser = pipeParsers([
     sequenceOf([
         maybeWhitespaces,
-        many1(anythingExcept(choice([ anyOfString(' \n\t\r.\\λ()='), endOfInput ])))
+        anythingExcept(choice([...invalidCharactersInIdentifiers, digit])),
+        many(anythingExcept(choice(invalidCharactersInIdentifiers)))
     ]),
-    mapTo(([whitespace, variableName]) => new Variable(variableName.join('')))
+    mapTo(([whitespace, startOfVariable, restOfVariable]) => new Variable([startOfVariable, ...restOfVariable].join('')))
+])
+
+const numberParser = pipeParsers([
+    sequenceOf([
+        maybeWhitespaces,
+        many1(digit)
+    ]),
+    mapTo(([whitespace, value]) => new NumberLiteral(parseInt(value.join(''))))
 ])
 
 const token = (string) => {
@@ -68,8 +78,8 @@ const parenthesesParser = pipeParsers([
 
 const applicationParser = pipeParsers([
     sequenceOf([
-        choice([lambdaParser, variableParser, parenthesesParser, holeParser]),
-        sepBy1 (whitespaces) (choice([lambdaParser, variableParser, parenthesesParser, holeParser]))
+        choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
+        sepBy1 (whitespaces) (choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))
     ]),
     mapTo(([abstraction, args]) => {
         const applications = [abstraction, ...args]

@@ -25,7 +25,7 @@ class JsValue extends Expression {
 
     applyTo(anArgument) {
         if (this.value instanceof Function) {
-            return this.value(anArgument)
+            return this.value(anArgument.fullBetaReduce())
         } else {
             return application(anArgument, this)
         }

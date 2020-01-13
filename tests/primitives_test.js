@@ -22,7 +22,16 @@ suite('Primitives', () => {
         const id = lambda(variable('x'), variable('x'))
 
         assert.that(apply(asNumber, id)).isEqualTo(number(1))
+    })
 
+    test('not reduced number asNumber', () => {
+        const two = lambda(variable('f'), lambda(variable('x'),
+            application(variable('f'), application(variable('f'), variable('x')))
+        ))
+        const id = lambda(variable('x'), variable('x'))
+        const value = application(id, two)
+
+        assert.that(apply(asNumber, value)).isEqualTo(number(2))
     })
 
     test('not number asNumber', () => {

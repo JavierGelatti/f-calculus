@@ -1,5 +1,5 @@
 const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, lookAhead, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
-const { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral } = require('./ast')
+const { variable, lambda, application, infixApplication, hole, letExpression, number } = require('./ast')
 
 const expressionParser = recursiveParser(() => pipeParsers([
     choice([letParser, infixApplicationParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser])
@@ -12,7 +12,7 @@ const variableParser = pipeParsers([
         letter,
         many(anythingExcept(choice(invalidCharactersInIdentifiers)))
     ]),
-    mapTo(([whitespace, startOfVariable, restOfVariable]) => new Variable([startOfVariable, ...restOfVariable].join('')))
+    mapTo(([whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
 const infixOperatorParser = pipeParsers([
@@ -21,7 +21,7 @@ const infixOperatorParser = pipeParsers([
         anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])),
         many(anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])))
     ]),
-    mapTo(([whitespace, startOfVariable, restOfVariable]) => new Variable([startOfVariable, ...restOfVariable].join('')))
+    mapTo(([whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
 const fullVariableParser = choice([variableParser, infixOperatorParser])
@@ -31,7 +31,7 @@ const numberParser = pipeParsers([
         optionalWhitespace,
         many1(digit)
     ]),
-    mapTo(([whitespace, value]) => new NumberLiteral(parseInt(value.join(''))))
+    mapTo(([whitespace, value]) => number(parseInt(value.join(''))))
 ])
 
 const token = (string) => {
@@ -53,7 +53,7 @@ const letParser = pipeParsers([
         token('.'),
         expressionParser
     ]),
-    mapTo(([letStr, variable, equals, value, dot, expression]) => new LetExpression(variable, value, expression))
+    mapTo(([letStr, variable, equals, value, dot, expression]) => letExpression(variable, value, expression))
 ])
 
 const lambdaParser = pipeParsers([
@@ -64,12 +64,12 @@ const lambdaParser = pipeParsers([
         token('.'),
         expressionParser,
     ]),
-    mapTo(([whitespace, lambda, variable, dot, body]) => new Abstraction(variable, body))
+    mapTo(([whitespace, lambdaChar, variable, dot, body]) => lambda(variable, body))
 ])
 
 const holeParser = pipeParsers([
     sequenceOf([optionalWhitespace, char('_')]),
-    mapTo(([whitespace, underscore]) => new Hole())
+    mapTo(([whitespace, underscore]) => hole())
 ])
 
 const parenthesesParser = pipeParsers([
@@ -92,7 +92,7 @@ const applicationParser = pipeParsers([
     ]),
     mapTo(([abstraction, args]) => {
         return args.reduce(
-            (previousApplication, currentArgument) => new Application(previousApplication, currentArgument),
+            (previousApplication, currentArgument) => application(previousApplication, currentArgument),
             abstraction
         )
     })
@@ -109,7 +109,7 @@ const infixApplicationParser = pipeParsers([
     mapTo(([firstArgument, rest]) => {
         return rest.reduce(
             (previousApplication, [currentOperator, currentSecondArgument]) =>
-                new InfixApplication(currentOperator, previousApplication, currentSecondArgument),
+                infixApplication(currentOperator, previousApplication, currentSecondArgument),
             firstArgument
         )
     })

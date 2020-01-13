@@ -452,4 +452,4 @@ function subclassResponsibility(object, methodName) {
     throw new Error(`${object.constructor.name}#${methodName}: subclass responsibility`)
 }
 
-module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, js, number, variable, letExpression, application, infixApplication, lambda, hole, apply }
+module.exports = { js, number, variable, letExpression, application, infixApplication, lambda, hole, apply }

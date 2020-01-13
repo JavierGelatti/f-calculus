@@ -21,7 +21,7 @@ function prompt(text) {
 let backlog = ''
 
 function repl() {
-    prompt(`${bold}${cyan}λ${off} `).then(code => {
+    return prompt(`${bold}${cyan}λ${off} `).then(code => {
         if (code === 'exit') {
             readline.close()
             console.log('bye!')
@@ -34,7 +34,7 @@ function repl() {
         } catch (ex) {
             if (validSyntax(code + '._')) {
                 backlog += code + '.'
-                return
+                return repl()
             } else {
                 throw ex
             }
@@ -42,9 +42,11 @@ function repl() {
 
         const result = expression.fullBetaReduce()
         console.log(result.toString())
+        return repl()
     }).catch(error => {
         console.log(error)
-    }).then(repl)
+        return repl()
+    })
 }
 
 function validSyntax(text) {

@@ -134,20 +134,6 @@ class Variable extends Expression {
     }
 }
 
-class VariableTBD extends Variable {
-    constructor() {
-        super('???')
-    }
-
-    accept(visitor) {
-        return visitor.visitVariableToBeDefined(this)
-    }
-
-    equals(anotherVariable) {
-        return this === anotherVariable
-    }
-}
-
 class Abstraction extends Expression {
     constructor(boundVariable, body) {
         super()
@@ -465,10 +451,6 @@ function variable(name) {
     return new Variable(name)
 }
 
-function variableTBD() {
-    return new VariableTBD()
-}
-
 function number(value) {
     return new NumberLiteral(value)
 }
@@ -505,4 +487,4 @@ function subclassResponsibility(object, methodName) {
     throw new Error(`${object.constructor.name}#${methodName}: subclass responsibility`)
 }
 
-module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, js, number, variable, variableTBD, letExpression, application, infixApplication, lambda, hole, apply }
+module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, js, number, variable, letExpression, application, infixApplication, lambda, hole, apply }

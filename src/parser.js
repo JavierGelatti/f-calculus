@@ -85,7 +85,7 @@ const parenthesesParser = pipeParsers([
 
 const applicationParser = pipeParsers([
     sequenceOf([
-        choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
+        choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser]),
         sepBy1(
             sequenceOf([whitespace, lookAhead(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))])
         )(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))

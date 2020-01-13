@@ -194,4 +194,14 @@ suite('Parser', () => {
                 )
             )
     })
+
+    test('infix operators as application functions without parenthesis', () => {
+        assert.that(parseExpression('+ 2')).
+            isEqualTo(
+                application(
+                    variable('+'),
+                    number(2)
+                )
+            )
+    })
 })

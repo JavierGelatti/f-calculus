@@ -1,6 +1,4 @@
 const { Expression } = require('./expression')
-const { primitive } = require('./js_value')
-const { application } = require('./application')
 const { variable } = require('./variable')
 
 class Abstraction extends Expression {
@@ -46,40 +44,7 @@ class Abstraction extends Expression {
     }
 
     toString() {
-        const printAsNumber = true
-
-        if (printAsNumber) {
-            const asNumber = this.asNumber()
-            if (asNumber === undefined) {
-                return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
-            } else {
-                return asNumber.toString()
-            }
-        } else {
-            return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
-        }
-    }
-
-    asNumber() {
-        const thing = primitive(anArgument => {
-            const reducedArgument = anArgument.fullBetaReduce()
-
-            if (reducedArgument.isPrimitive()) {
-                return primitive(reducedArgument.value + 1)
-            } else {
-                return application(thing, anArgument)
-            }
-        })
-        const value = application(
-            application(this, thing),
-            primitive(0)
-        ).fullBetaReduce().value
-
-        if (typeof value === 'number') {
-            return value
-        } else {
-            return undefined
-        }
+        return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
     }
 
     accept(visitor) {

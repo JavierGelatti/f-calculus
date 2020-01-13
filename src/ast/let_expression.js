@@ -13,8 +13,8 @@ class LetExpression extends SugarExpression {
 
     unsugar() {
         return application(
-            lambda(this.variable, this.expression.unsugar()),
-            this.value.unsugar()
+            lambda(this.variable, this.expression),
+            this.value
         )
     }
 

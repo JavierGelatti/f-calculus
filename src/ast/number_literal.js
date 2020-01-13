@@ -34,6 +34,10 @@ class NumberLiteral extends SugarExpression {
         return []
     }
 
+    betaReduced() {
+        return this
+    }
+
     replaceFreeVariable(_oldVariable, _newValue) {
         return this
     }

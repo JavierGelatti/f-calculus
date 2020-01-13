@@ -11,8 +11,7 @@ suite('string representation', () => {
 
     test('abstraction', () => {
         assert.that(parseExpression('(λx.x)').toString()).
-            // isEqualTo("(λx.x)")
-            isEqualTo('1')
+            isEqualTo('(λx.x)')
     })
 
     test('let expression', () => {
@@ -23,17 +22,6 @@ suite('string representation', () => {
     test('number literals', () => {
         assert.that(parseExpression('3').toString()).
             isEqualTo('3')
-    })
-
-    test('numbers', () => {
-        assert.that(parseExpression('(λf.λx.x)').toString()).isEqualTo('0')
-        assert.that(parseExpression('(λf.λx.x)').asNumber()).isEqualTo(0)
-        assert.that(parseExpression('(λf.(λx.x))').asNumber()).isEqualTo(0)
-        assert.that(parseExpression('(λf.(λx.f x))').asNumber()).isEqualTo(1)
-        assert.that(parseExpression('(λf.(λx.f (f x)))').asNumber()).isEqualTo(2)
-        assert.that(parseExpression('(λx.x)').asNumber()).isEqualTo(1)
-        assert.that(parseExpression('(λx.(λf.(λx.f x)))').asNumber()).isUndefined()
-        assert.that(parseExpression('(λf.(λx.f))').asNumber()).isUndefined()
     })
 
     test('infix operators', () => {

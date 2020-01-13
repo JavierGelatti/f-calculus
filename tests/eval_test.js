@@ -125,6 +125,34 @@ suite('Beta reduction', () => {
         assert.that(letExpr.fullBetaReduce()).isEqualTo(variable('z'))
     })
 
+    test('nested let expressions bodies', () => {
+        const letExpr = letExpression(
+            variable('x'),
+            variable('y'),
+            letExpression(
+                variable('x'),
+                variable('z'),
+                variable('x')
+            )
+        )
+
+        assert.that(letExpr.fullBetaReduce()).isEqualTo(variable('z'))
+    })
+
+    test('nested let expressions values', () => {
+        const letExpr = letExpression(
+            variable('x'),
+            letExpression(
+                variable('u'),
+                variable('v'),
+                variable('w')
+            ),
+            variable('x')
+        )
+
+        assert.that(letExpr.fullBetaReduce()).isEqualTo(variable('w'))
+    })
+
     test('numbers', () => {
         const expr = application(
             lambda(variable('x'),
@@ -133,6 +161,10 @@ suite('Beta reduction', () => {
             number(0)
         )
         assert.that(expr.fullBetaReduce()).isEqualTo(lambda(variable('y'), number(0)))
+    })
+
+    test('numbers reduction', () => {
+        assert.that(number(1).fullBetaReduce()).isEqualTo(number(1))
     })
 
     test('infix operators', () => {

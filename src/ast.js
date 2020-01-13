@@ -7,4 +7,4 @@ const { letExpression } = require('./ast/let_expression')
 const { infixApplication } = require('./ast/infix_application')
 const { number } = require('./ast/number_literal')
 
-module.exports = { js: primitive, number, variable, letExpression, application, infixApplication, lambda, hole }
+module.exports = { js: primitive, primitive, number, variable, letExpression, application, infixApplication, lambda, hole }

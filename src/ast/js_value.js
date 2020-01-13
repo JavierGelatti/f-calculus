@@ -5,7 +5,10 @@ class JsValue extends Expression {
     constructor(jsValue, stringRepresentation = undefined) {
         super()
         this.value = jsValue
-        this.stringRepresentation = stringRepresentation
+
+        if (stringRepresentation) {
+            this.stringRepresentation = stringRepresentation
+        }
     }
 
     freeVariables() {

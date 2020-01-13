@@ -1,3 +1,4 @@
+const { withPrimitiveBindings } = require('./src/primitives')
 const { parseExpression } = require('./src/parser')
 const readline = require('readline').createInterface({
     input: process.stdin,
@@ -29,7 +30,7 @@ function repl() {
 
         let expression
         try {
-            expression = parseExpression(backlog + code)
+            expression = withPrimitiveBindings(parseExpression(backlog + code))
         } catch (ex) {
             if (validSyntax(code + '._')) {
                 backlog += code + '.'

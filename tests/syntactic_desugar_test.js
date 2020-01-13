@@ -18,52 +18,6 @@ suite('syntatic unsugaring', () => {
         )
     })
 
-    test('nested let expressions bodies are transformed into applications', () => {
-        const letExpr = letExpression(
-            variable('x'),
-            variable('y'),
-            letExpression(
-                variable('u'),
-                variable('v'),
-                variable('w')
-            )
-        )
-
-        assert.that(letExpr.unsugar()).isEqualTo(
-            application(
-                lambda(variable('x'),
-                    application(
-                        lambda(variable('u'), variable('w')),
-                        variable('v')
-                    )
-                ),
-                variable('y')
-            )
-        )
-    })
-
-    test('nested let expressions values are transformed into applications', () => {
-        const letExpr = letExpression(
-            variable('x'),
-            letExpression(
-                variable('u'),
-                variable('v'),
-                variable('w')
-            ),
-            variable('z')
-        )
-
-        assert.that(letExpr.unsugar()).isEqualTo(
-            application(
-                lambda(variable('x'), variable('z')),
-                application(
-                    lambda(variable('u'), variable('w')),
-                    variable('v')
-                )
-            )
-        )
-    })
-
     test('can unsugar zero', () => {
         assert.that(number(0).unsugar()).isEqualTo(
             lambda(variable('f'),

@@ -1,6 +1,6 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { variable, application, infixApplication, lambda, apply, letExpression, number } = require('../src/ast')
+const { variable, application, infixApplication, lambda, apply, letExpression, number, js } = require('../src/ast')
 
 suite('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {
@@ -142,5 +142,21 @@ suite('Beta reduction', () => {
             infixApplication(variable("+"), variable("v"), variable("w"))
         )
         assert.that(expr.fullBetaReduce()).isEqualTo(variable('v'))
+    })
+
+    test('js function evaluation', () => {
+        let valuePassedToJs;
+        const expr = application(
+            js(x => {
+                valuePassedToJs = x
+                return variable("y")
+            }),
+            variable("x")
+        )
+
+        const result = expr.fullBetaReduce();
+
+        assert.that(valuePassedToJs).isEqualTo(variable('x'))
+        assert.that(result).isEqualTo(variable('y'))
     })
 })

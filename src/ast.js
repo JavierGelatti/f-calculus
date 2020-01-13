@@ -198,17 +198,32 @@ class Abstraction extends Expression {
     }
 
     toString() {
-        const asNumber = this.asNumber();
-        if (asNumber === undefined) {
-            return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
+        const printAsNumber = true
+
+        if (printAsNumber) {
+            const asNumber = this.asNumber();
+            if (asNumber === undefined) {
+                return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
+            } else {
+                return asNumber.toString()
+            }
         } else {
-            return asNumber.toString()
+            return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
         }
     }
 
     asNumber() {
+        const thing = new JsValue(anArgument => {
+            const reducedArgument = anArgument.fullBetaReduce()
+
+            if (reducedArgument instanceof JsValue) {
+                return new JsValue(reducedArgument.value + 1)
+            } else {
+                return application(thing, anArgument)
+            }
+        })
         const value = application(
-            application(this, new JsValue(x => x + 1)),
+            application(this, thing),
             new JsValue(0)
         ).fullBetaReduce().value;
 
@@ -236,9 +251,10 @@ class Abstraction extends Expression {
 }
 
 class JsValue extends Expression {
-    constructor(jsValue) {
+    constructor(jsValue, stringRepresentation = undefined) {
         super()
         this.value = jsValue
+        this.stringRepresentation = stringRepresentation
     }
 
     freeVariables() {
@@ -259,15 +275,19 @@ class JsValue extends Expression {
     }
 
     applyTo(anArgument) {
-        if (this.value instanceof Function && anArgument instanceof JsValue) {
-            return new JsValue(this.value(anArgument.value))
+        if (this.value instanceof Function) {
+            return this.value(anArgument)
         } else {
             return application(anArgument, this)
         }
     }
 
     toString() {
-        return `jsValue: ${this.value.toString()}`
+        if (this.stringRepresentation) {
+            return this.stringRepresentation
+        } else {
+            return `<primitive: ${this.value.toString()}>`
+        }
     }
 }
 
@@ -461,6 +481,10 @@ function application(abstraction, argument) {
     return new Application(abstraction, argument)
 }
 
+function js(javascriptValue, stringRepresentation = undefined) {
+    return new JsValue(javascriptValue, stringRepresentation)
+}
+
 function infixApplication(abstraction, argument1, argument2) {
     return new InfixApplication(abstraction, argument1, argument2)
 }
@@ -481,4 +505,4 @@ function subclassResponsibility(object, methodName) {
     throw new Error(`${object.constructor.name}#${methodName}: subclass responsibility`)
 }
 
-module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, number, variable, variableTBD, letExpression, application, infixApplication, lambda, hole, apply }
+module.exports = { Variable, Abstraction, Application, InfixApplication, Hole, LetExpression, NumberLiteral, js, number, variable, variableTBD, letExpression, application, infixApplication, lambda, hole, apply }

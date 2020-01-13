@@ -16,7 +16,14 @@ class Expression {
     }
 
     equals(other) {
-        subclassResponsibility(this, 'equals')
+        return other instanceof this.constructor &&
+            Object.keys(this).every(property => {
+                if (this[property] && this[property].equals) {
+                    return this[property].equals(other[property])
+                } else {
+                    return this[property] === other[property]
+                }
+            })
     }
 
     freeVariables() {
@@ -96,11 +103,6 @@ class Variable extends Expression {
         return this
     }
 
-    equals(anotherVariable) {
-        return anotherVariable instanceof Variable &&
-            this.name === anotherVariable.name
-    }
-
     replaceFreeVariable(oldVariable, newValue) {
         if (this.equals(oldVariable)) {
             return newValue
@@ -169,13 +171,6 @@ class Abstraction extends Expression {
         let newVariable = variable(newVariableName);
         if (includes(this.body.freeVariables(), newVariable)) throw new Error("The variable " + newVariableName + " is free in the body")
         return new Abstraction(newVariable, this.body.replaceFreeVariable(this.boundVariable, newVariable))
-    }
-
-    equals(anotherAbstraction) {
-        // TODO: Cambiar esto!
-        return anotherAbstraction instanceof Abstraction &&
-            this.boundVariable.equals(anotherAbstraction.boundVariable) &&
-            this.body.equals(anotherAbstraction.body)
     }
 
     freeVariables() {
@@ -247,11 +242,6 @@ class JsValue extends Expression {
         return []
     }
 
-    equals(anotherJsValue) {
-        return anotherJsValue instanceof JsValue &&
-            this.value === anotherJsValue.value
-    }
-
     replaceFreeVariable(oldVariable, newValue) {
         return this
     }
@@ -301,12 +291,6 @@ class Application extends Expression {
             this.abstraction.replaceFreeVariable(oldVariable, newValue),
             this.argument.replaceFreeVariable(oldVariable, newValue)
         )
-    }
-
-    equals(anotherApplication) {
-        return anotherApplication instanceof Application &&
-            this.abstraction.equals(anotherApplication.abstraction) &&
-            this.argument.equals(anotherApplication.argument)
     }
 
     freeVariables() {
@@ -363,13 +347,6 @@ class LetExpression extends SugarExpression {
         this.expression = expression;
     }
 
-    equals(anotherLet) {
-        return anotherLet instanceof LetExpression &&
-            this.variable.equals(anotherLet.variable) &&
-            this.value.equals(anotherLet.value) &&
-            this.expression.equals(anotherLet.expression)
-    }
-
     unsugar() {
         return application(
             lambda(this.variable, this.expression.unsugar()),
@@ -390,13 +367,6 @@ class InfixApplication extends SugarExpression {
         this.secondArgument = secondArgument
     }
 
-    equals(other) {
-        return other instanceof InfixApplication &&
-            this.operator.equals(other.operator) &&
-            this.firstArgument.equals(other.firstArgument) &&
-            this.secondArgument.equals(other.secondArgument)
-    }
-
     unsugar() {
         return application(application(this.operator, this.firstArgument), this.secondArgument)
     }
@@ -411,11 +381,6 @@ class NumberLiteral extends SugarExpression {
         if (typeof value !== 'number') throw new Error(`${value} is not a number`)
         super()
         this.value = value
-    }
-
-    equals(anotherNumber) {
-        return anotherNumber instanceof NumberLiteral &&
-            this.value === anotherNumber.value
     }
 
     unsugar() {

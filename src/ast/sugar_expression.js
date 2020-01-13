@@ -1,5 +1,5 @@
-const { Expression } = require("./expression")
-const { subclassResponsibility } = import('./../utils')
+const { Expression } = require('./expression')
+const { subclassResponsibility } = require('./../utils')
 
 class SugarExpression extends Expression {
     betaReduced() {

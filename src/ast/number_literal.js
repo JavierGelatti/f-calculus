@@ -1,7 +1,7 @@
-const { SugarExpression } = require("./sugar_expression")
-const { variable } = require("./variable")
-const { lambda } = require("./abstraction")
-const { application } = require("./application")
+const { SugarExpression } = require('./sugar_expression')
+const { variable } = require('./variable')
+const { lambda } = require('./abstraction')
+const { application } = require('./application')
 
 class NumberLiteral extends SugarExpression {
     constructor(value) {
@@ -34,7 +34,7 @@ class NumberLiteral extends SugarExpression {
         return []
     }
 
-    replaceFreeVariable(oldVariable, newValue) {
+    replaceFreeVariable(_oldVariable, _newValue) {
         return this
     }
 }

@@ -1,4 +1,4 @@
-const { Expression } = require("./expression")
+const { Expression } = require('./expression')
 
 class Application extends Expression {
     constructor(abstraction, argument) {

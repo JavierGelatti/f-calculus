@@ -1,5 +1,5 @@
-const { SugarExpression } = require("./sugar_expression")
-const { application } = require("./application")
+const { SugarExpression } = require('./sugar_expression')
+const { application } = require('./application')
 
 class InfixApplication extends SugarExpression {
     constructor(operator, firstArgument, secondArgument) {

@@ -1,4 +1,4 @@
-const { Testy } = require('@pmoo/testy');
+const { Testy } = require('@pmoo/testy')
 
 Testy.configuredWith({
     // relative or absolute path
@@ -7,4 +7,4 @@ Testy.configuredWith({
     language: 'en',
     // Stops at the first failed or errored test. false by default
     failFast: false,
-}).run();
+}).run()

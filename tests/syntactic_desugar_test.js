@@ -1,14 +1,14 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { variable, application, lambda, apply, letExpression, hole, number } = require('../src/ast')
+const { variable, application, lambda, letExpression, hole, number } = require('../src/ast')
 
 suite('syntatic unsugaring', () => {
     test('let expressions are transformed into applications', () => {
         const letExpr = letExpression(
-            variable("x"),
-            variable("y"),
-            variable("z")
-        );
+            variable('x'),
+            variable('y'),
+            variable('z')
+        )
 
         assert.that(letExpr.unsugar()).isEqualTo(
             application(
@@ -20,14 +20,14 @@ suite('syntatic unsugaring', () => {
 
     test('nested let expressions bodies are transformed into applications', () => {
         const letExpr = letExpression(
-            variable("x"),
-            variable("y"),
+            variable('x'),
+            variable('y'),
             letExpression(
-                variable("u"),
-                variable("v"),
-                variable("w")
+                variable('u'),
+                variable('v'),
+                variable('w')
             )
-        );
+        )
 
         assert.that(letExpr.unsugar()).isEqualTo(
             application(
@@ -44,14 +44,14 @@ suite('syntatic unsugaring', () => {
 
     test('nested let expressions values are transformed into applications', () => {
         const letExpr = letExpression(
-            variable("x"),
+            variable('x'),
             letExpression(
-                variable("u"),
-                variable("v"),
-                variable("w")
+                variable('u'),
+                variable('v'),
+                variable('w')
             ),
-            variable("z")
-        );
+            variable('z')
+        )
 
         assert.that(letExpr.unsugar()).isEqualTo(
             application(
@@ -88,8 +88,8 @@ suite('syntatic unsugaring', () => {
             hole()
         ]
 
-        for (astNode of asts) {
-            assert.that(astNode.unsugar()).isEqualTo(astNode);
+        for (const astNode of asts) {
+            assert.that(astNode.unsugar()).isEqualTo(astNode)
         }
     })
 })

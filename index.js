@@ -1,20 +1,20 @@
-const {parseExpression} = require("./src/parser")
+const { parseExpression } = require('./src/parser')
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
 })
 
 // Colors and emphasis
-const off = '\x1b[0m';
-const bold = '\x1b[1m';
-const cyan = '\x1b[36m';
+const off = '\x1b[0m'
+const bold = '\x1b[1m'
+const cyan = '\x1b[36m'
 
 function prompt(text) {
     return new Promise(accept => {
         readline.question(text, (input) => {
             accept(input)
         })
-    });
+    })
 }
 
 let backlog = ''
@@ -24,13 +24,13 @@ function repl() {
         if (code === 'exit') {
             readline.close()
             console.log('bye!')
-            return;
+            return
         }
 
         let expression
         try {
             expression = parseExpression(backlog + code)
-        } catch(ex) {
+        } catch (ex) {
             if (validSyntax(code + '._')) {
                 backlog += code + '.'
                 return
@@ -42,7 +42,7 @@ function repl() {
         const result = expression.fullBetaReduce()
         console.log(result.toString())
     }).catch(error => {
-        console.log(error);
+        console.log(error)
     }).then(repl)
 }
 
@@ -50,7 +50,7 @@ function validSyntax(text) {
     try {
         parseExpression(text)
         return true
-    } catch(ex) {
+    } catch (ex) {
         return false
     }
 }

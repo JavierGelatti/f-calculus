@@ -1,14 +1,14 @@
 
-const { SugarExpression } = require("./sugar_expression")
-const { application } = require("./application")
-const { lambda } = require("./abstraction")
+const { SugarExpression } = require('./sugar_expression')
+const { application } = require('./application')
+const { lambda } = require('./abstraction')
 
 class LetExpression extends SugarExpression {
     constructor(variable, value, expression) {
         super()
-        this.variable = variable;
-        this.value = value;
-        this.expression = expression;
+        this.variable = variable
+        this.value = value
+        this.expression = expression
     }
 
     unsugar() {
@@ -24,7 +24,7 @@ class LetExpression extends SugarExpression {
 }
 
 function letExpression(variable, value, expression) {
-    return new LetExpression(variable, value, expression);
+    return new LetExpression(variable, value, expression)
 }
 
 module.exports = { letExpression }

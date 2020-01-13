@@ -5,14 +5,14 @@ const expressionParser = recursiveParser(() => pipeParsers([
     choice([letParser, infixApplicationParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser])
 ]))
 
-const invalidCharactersInIdentifiers = [anyOfString(' \n\t\r.\\λ()='), endOfInput];
+const invalidCharactersInIdentifiers = [anyOfString(' \n\t\r.\\λ()='), endOfInput]
 const variableParser = pipeParsers([
     sequenceOf([
         optionalWhitespace,
         letter,
         many(anythingExcept(choice(invalidCharactersInIdentifiers)))
     ]),
-    mapTo(([whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
+    mapTo(([_whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
 const infixOperatorParser = pipeParsers([
@@ -21,7 +21,7 @@ const infixOperatorParser = pipeParsers([
         anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])),
         many(anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])))
     ]),
-    mapTo(([whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
+    mapTo(([_whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
 const fullVariableParser = choice([variableParser, infixOperatorParser])
@@ -31,7 +31,7 @@ const numberParser = pipeParsers([
         optionalWhitespace,
         many1(digit)
     ]),
-    mapTo(([whitespace, value]) => number(parseInt(value.join(''))))
+    mapTo(([_whitespace, value]) => number(parseInt(value.join(''))))
 ])
 
 const token = (string) => {
@@ -40,7 +40,7 @@ const token = (string) => {
             optionalWhitespace,
             str(string)
         ]),
-        mapTo(([whitespace, readString]) => readString)
+        mapTo(([_whitespace, readString]) => readString)
     ])
 }
 
@@ -53,7 +53,7 @@ const letParser = pipeParsers([
         token('.'),
         expressionParser
     ]),
-    mapTo(([letStr, variable, equals, value, dot, expression]) => letExpression(variable, value, expression))
+    mapTo(([_letStr, variable, _equalsSign, value, _dot, expression]) => letExpression(variable, value, expression))
 ])
 
 const lambdaParser = pipeParsers([
@@ -64,12 +64,12 @@ const lambdaParser = pipeParsers([
         token('.'),
         expressionParser,
     ]),
-    mapTo(([whitespace, lambdaChar, variable, dot, body]) => lambda(variable, body))
+    mapTo(([_whitespace, _lambdaChar, variable, _dot, body]) => lambda(variable, body))
 ])
 
 const holeParser = pipeParsers([
     sequenceOf([optionalWhitespace, char('_')]),
-    mapTo(([whitespace, underscore]) => hole())
+    mapTo(([_whitespace, _underscore]) => hole())
 ])
 
 const parenthesesParser = pipeParsers([
@@ -80,7 +80,7 @@ const parenthesesParser = pipeParsers([
         optionalWhitespace,
         char(')'),
     ]),
-    mapTo(([whitespace0, openParen, expression, whitespace1, closingParen]) => expression)
+    mapTo(([_whitespace0, _openParen, expression, _whitespace1, _closingParen]) => expression)
 ])
 
 const applicationParser = pipeParsers([

@@ -1,4 +1,5 @@
-const { Expression } = require("./expression")
+const { Expression } = require('./expression')
+const { application } = require('./application')
 
 class JsValue extends Expression {
     constructor(jsValue, stringRepresentation = undefined) {
@@ -11,12 +12,12 @@ class JsValue extends Expression {
         return []
     }
 
-    replaceFreeVariable(oldVariable, newValue) {
+    replaceFreeVariable(_oldVariable, _newValue) {
         return this
     }
 
     betaReduced() {
-        return this;
+        return this
     }
 
     applyTo(anArgument) {

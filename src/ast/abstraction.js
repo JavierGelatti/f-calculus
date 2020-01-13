@@ -1,7 +1,7 @@
-const { Expression } = require("./expression")
-const { primitive } = require("./js_value")
-const { application } = require("./application")
-const { variable } = require("./variable")
+const { Expression } = require('./expression')
+const { primitive } = require('./js_value')
+const { application } = require('./application')
+const { variable } = require('./variable')
 
 class Abstraction extends Expression {
     constructor(boundVariable, body) {
@@ -22,7 +22,7 @@ class Abstraction extends Expression {
         if (oldVariable.equals(this.boundVariable)) {
             return this
         } else if (includes(newValue.freeVariables(), this.boundVariable)) {
-            return this.alphaConvertNotToHave(newValue.freeVariables()).replaceFreeVariable(oldVariable, newValue);
+            return this.alphaConvertNotToHave(newValue.freeVariables()).replaceFreeVariable(oldVariable, newValue)
         } else {
             return lambda(this.boundVariable, this.body.replaceFreeVariable(oldVariable, newValue))
         }
@@ -30,13 +30,13 @@ class Abstraction extends Expression {
 
     alphaConvertNotToHave(notWantedVariables) {
         let allVariables = 'abcdefghijklmnopqrstuvwxyz'.split('')//.map(v => variable('_' + v));
-        let newVariableName = allVariables.find(v => !includes(notWantedVariables, v));
-        return this.alphaConvert(newVariableName);
+        let newVariableName = allVariables.find(v => !includes(notWantedVariables, v))
+        return this.alphaConvert(newVariableName)
     }
 
     alphaConvert(newVariableName) {
-        let newVariable = variable(newVariableName);
-        if (includes(this.body.freeVariables(), newVariable)) throw new Error("The variable " + newVariableName + " is free in the body")
+        let newVariable = variable(newVariableName)
+        if (includes(this.body.freeVariables(), newVariable)) throw new Error('The variable ' + newVariableName + ' is free in the body')
         return lambda(newVariable, this.body.replaceFreeVariable(this.boundVariable, newVariable))
     }
 
@@ -49,7 +49,7 @@ class Abstraction extends Expression {
         const printAsNumber = true
 
         if (printAsNumber) {
-            const asNumber = this.asNumber();
+            const asNumber = this.asNumber()
             if (asNumber === undefined) {
                 return `(λ${this.boundVariable.toString()}.${this.body.toString()})`
             } else {
@@ -73,7 +73,7 @@ class Abstraction extends Expression {
         const value = application(
             application(this, thing),
             primitive(0)
-        ).fullBetaReduce().value;
+        ).fullBetaReduce().value
 
         if (typeof value === 'number') {
             return value

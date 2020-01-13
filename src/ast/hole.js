@@ -1,4 +1,5 @@
-const { Expression } = require("./expression")
+const { Expression } = require('./expression')
+const { application } = require('./application')
 
 class Hole extends Expression {
     betaReduced() {
@@ -13,12 +14,12 @@ class Hole extends Expression {
         return []
     }
 
-    replaceFreeVariable(oldVariable, newValue) {
+    replaceFreeVariable(_oldVariable, _newValue) {
         return this
     }
 
     applyTo(argument) {
-        return new Application(this, argument)
+        return application(this, argument)
     }
 
     toString() {

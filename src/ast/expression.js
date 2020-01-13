@@ -1,4 +1,4 @@
-const { subclassResponsibility } = import('./../utils')
+const { subclassResponsibility } = require('./../utils')
 
 class Expression {
     fullBetaReduce() {
@@ -32,11 +32,11 @@ class Expression {
         subclassResponsibility(this, 'freeVariables')
     }
 
-    replaceFreeVariable(oldVariable, newValue) {
+    replaceFreeVariable(_oldVariable, _newValue) {
         subclassResponsibility(this, 'replaceFreeVariable')
     }
 
-    applyTo(argument) {
+    applyTo(_argument) {
         subclassResponsibility(this, 'applyTo')
     }
 
@@ -44,11 +44,11 @@ class Expression {
         subclassResponsibility(this, 'toString')
     }
 
-    accept(visitor) {
+    accept(_visitor) {
         subclassResponsibility(this, 'accept')
     }
 
-    replace(toBeReplaced, replacement) {
+    replace(_toBeReplaced, _replacement) {
         subclassResponsibility(this, 'replace')
     }
 

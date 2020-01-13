@@ -1,5 +1,5 @@
-const { Expression } = require("./expression")
-const { application } = require("./application")
+const { Expression } = require('./expression')
+const { application } = require('./application')
 
 class Variable extends Expression {
     constructor(name) {

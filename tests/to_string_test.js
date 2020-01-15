@@ -1,6 +1,6 @@
 const { suite, test, assert } = require('@pmoo/testy')
 
-const { js } = require('../src/ast')
+const { primitive } = require('../src/ast')
 const { parseExpression } = require('../src/parser')
 
 suite('string representation', () => {
@@ -29,7 +29,7 @@ suite('string representation', () => {
     })
 
     test('js values', () => {
-        assert.that(js(x => x).toString()).isEqualTo('<primitive: x => x>')
-        assert.that(js(x => x, 'stuff').toString()).isEqualTo('stuff')
+        assert.that(primitive(x => x).toString()).isEqualTo('<primitive: x => x>')
+        assert.that(primitive(x => x, 'stuff').toString()).isEqualTo('stuff')
     })
 })

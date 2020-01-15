@@ -1,8 +1,8 @@
-const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, lookAhead, sequenceOf, many1, mapTo, pipeParsers, sepBy1, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
+const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
 const { variable, lambda, application, infixApplication, hole, letExpression, number } = require('./ast')
 
 const expressionParser = recursiveParser(() => pipeParsers([
-    choice([letParser, infixApplicationParser, applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser])
+    choice([letParser, infixApplicationParser, infixApplicationTermParser, infixOperatorParser])
 ]))
 
 const invalidCharactersInIdentifiers = [anyOfString(' \n\t\r.\\λ()='), endOfInput]
@@ -15,39 +15,30 @@ const variableParser = pipeParsers([
     mapTo(([_whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
+const infixOperatorCharacter = anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter]))
 const infixOperatorParser = pipeParsers([
     sequenceOf([
-        optionalWhitespace,
-        anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])),
-        many(anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter])))
+        takeRight(optionalWhitespace)(infixOperatorCharacter),
+        many(infixOperatorCharacter)
     ]),
-    mapTo(([_whitespace, startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
+    mapTo(([startOfVariable, restOfVariable]) => variable([startOfVariable, ...restOfVariable].join('')))
 ])
 
-const fullVariableParser = choice([variableParser, infixOperatorParser])
-
 const numberParser = pipeParsers([
-    sequenceOf([
-        optionalWhitespace,
-        many1(digit)
-    ]),
-    mapTo(([_whitespace, value]) => number(parseInt(value.join(''))))
+    takeRight(optionalWhitespace)(many1(digit)),
+    mapTo(digits => number(parseInt(digits.join(''))))
 ])
 
 const token = (string) => {
-    return pipeParsers([
-        sequenceOf([
-            optionalWhitespace,
-            str(string)
-        ]),
-        mapTo(([_whitespace, readString]) => readString)
-    ])
+    return takeRight(optionalWhitespace)(string.length === 1 ? char(string) : str(string))
 }
+
+const identifierParser = choice([variableParser, infixOperatorParser])
 
 const letParser = pipeParsers([
     sequenceOf([
         token('let'),
-        fullVariableParser,
+        identifierParser,
         token('='),
         expressionParser,
         token('.'),
@@ -58,37 +49,33 @@ const letParser = pipeParsers([
 
 const lambdaParser = pipeParsers([
     sequenceOf([
-        optionalWhitespace,
-        anyOfString('λ\\'),
-        fullVariableParser,
+        choice([token('λ'), token('\\')]),
+        identifierParser,
         token('.'),
         expressionParser,
     ]),
-    mapTo(([_whitespace, _lambdaChar, variable, _dot, body]) => lambda(variable, body))
+    mapTo(([_lambdaChar, variable, _dot, body]) => lambda(variable, body))
 ])
 
 const holeParser = pipeParsers([
-    sequenceOf([optionalWhitespace, char('_')]),
-    mapTo(([_whitespace, _underscore]) => hole())
+    token('_'),
+    mapTo(_underscore => hole())
 ])
 
 const parenthesesParser = pipeParsers([
     sequenceOf([
-        optionalWhitespace,
-        char('('),
+        token('('),
         expressionParser,
-        optionalWhitespace,
-        char(')'),
+        token(')'),
     ]),
-    mapTo(([_whitespace0, _openParen, expression, _whitespace1, _closingParen]) => expression)
+    mapTo(([_openParen, expression, _closingParen]) => expression)
 ])
 
+const applicationTermParser = choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser])
 const applicationParser = pipeParsers([
     sequenceOf([
-        choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser, infixOperatorParser]),
-        sepBy1(
-            sequenceOf([whitespace, lookAhead(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))])
-        )(choice([lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]))
+        choice([applicationTermParser, infixOperatorParser]),
+        many1(takeRight(whitespace)(applicationTermParser))
     ]),
     mapTo(([abstraction, args]) => {
         return args.reduce(
@@ -98,13 +85,11 @@ const applicationParser = pipeParsers([
     })
 ])
 
+const infixApplicationTermParser = choice([applicationParser, applicationTermParser])
 const infixApplicationParser = pipeParsers([
     sequenceOf([
-        choice([applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
-        many1(sequenceOf([
-            takeRight(optionalWhitespace)(infixOperatorParser),
-            choice([applicationParser, lambdaParser, variableParser, numberParser, parenthesesParser, holeParser]),
-        ]))
+        infixApplicationTermParser,
+        many1(sequenceOf([infixOperatorParser, infixApplicationTermParser]))
     ]),
     mapTo(([firstArgument, rest]) => {
         return rest.reduce(

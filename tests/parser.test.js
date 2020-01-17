@@ -1,30 +1,29 @@
-const { suite, test, assert } = require('@pmoo/testy')
 const { variable, application, infixApplication, lambda, letExpression, number } = require('../src/ast')
 const { parseExpression } = require('../src/parser')
 
-suite('Parser', () => {
+describe('Parser', () => {
     test('variables', () => {
-        assert.that(parseExpression('asd')).isEqualTo(variable('asd'))
+        expect(parseExpression('asd')).toEqual(variable('asd'))
     })
 
     test('variables with numbers', () => {
-        assert.that(parseExpression('asd123')).isEqualTo(variable('asd123'))
+        expect(parseExpression('asd123')).toEqual(variable('asd123'))
     })
 
     test('lambdas', () => {
-        assert.that(parseExpression('λx.x')).isEqualTo(lambda(variable('x'), variable('x')))
+        expect(parseExpression('λx.x')).toEqual(lambda(variable('x'), variable('x')))
     })
 
     test('lambdas with spaces', () => {
-        assert.that(parseExpression('λx . x')).isEqualTo(lambda(variable('x'), variable('x')))
+        expect(parseExpression('λx . x')).toEqual(lambda(variable('x'), variable('x')))
     })
 
     test('application', () => {
-        assert.that(parseExpression('x y')).isEqualTo(application(variable('x'), variable('y')))
+        expect(parseExpression('x y')).toEqual(application(variable('x'), variable('y')))
     })
 
     test('application with whitespace in between', () => {
-        assert.that(parseExpression('x\n  y\n  z')).isEqualTo(
+        expect(parseExpression('x\n  y\n  z')).toEqual(
             application(
                 application(variable('x'), variable('y')),
                 variable('z')
@@ -33,7 +32,7 @@ suite('Parser', () => {
     })
 
     test('application with whitespace at the end', () => {
-        assert.that(parseExpression('f x ')).isEqualTo(
+        expect(parseExpression('f x ')).toEqual(
             application(
                 variable('f'),
                 variable('x')
@@ -42,42 +41,42 @@ suite('Parser', () => {
     })
 
     test('application inside lambda', () => {
-        assert.that(parseExpression('λx.x x')).isEqualTo(lambda(variable('x'), application(variable('x'), variable('x'))))
+        expect(parseExpression('λx.x x')).toEqual(lambda(variable('x'), application(variable('x'), variable('x'))))
     })
 
     test('nested lambdas', () => {
-        assert.that(parseExpression('λx.λy.x')).
-            isEqualTo(lambda(variable('x'), lambda(variable('y'), variable('x'))))
+        expect(parseExpression('λx.λy.x')).
+            toEqual(lambda(variable('x'), lambda(variable('y'), variable('x'))))
     })
 
     test('nested application', () => {
-        assert.that(parseExpression('x y z')).
-            isEqualTo(application(application(variable('x'), variable('y')), variable('z')))
+        expect(parseExpression('x y z')).
+            toEqual(application(application(variable('x'), variable('y')), variable('z')))
     })
 
     test('parentheses in application function', () => {
-        assert.that(parseExpression('(λx.x) y')).
-            isEqualTo(application(lambda(variable('x'), variable('x')), variable('y')))
+        expect(parseExpression('(λx.x) y')).
+            toEqual(application(lambda(variable('x'), variable('x')), variable('y')))
     })
 
     test('parentheses in application argument', () => {
-        assert.that(parseExpression('(λx.x) (y)')).
-            isEqualTo(application(lambda(variable('x'), variable('x')), variable('y')))
+        expect(parseExpression('(λx.x) (y)')).
+            toEqual(application(lambda(variable('x'), variable('x')), variable('y')))
     })
 
     test('parentheses in variables', () => {
-        assert.that(parseExpression('(x)')).
-            isEqualTo(variable('x'))
+        expect(parseExpression('(x)')).
+            toEqual(variable('x'))
     })
 
     test('nested parentheses', () => {
-        assert.that(parseExpression('((λx.((x))))')).
-            isEqualTo(lambda(variable('x'), variable('x')))
+        expect(parseExpression('((λx.((x))))')).
+            toEqual(lambda(variable('x'), variable('x')))
     })
 
     test('let expressions', () => {
-        assert.that(parseExpression('let x = y. x')).
-            isEqualTo(
+        expect(parseExpression('let x = y. x')).
+            toEqual(
                 letExpression(
                     variable('x'),
                     variable('y'),
@@ -87,8 +86,8 @@ suite('Parser', () => {
     })
 
     test('let expressions with whitespace', () => {
-        assert.that(parseExpression('let  x  =  y  .   \n\nx')).
-            isEqualTo(
+        expect(parseExpression('let  x  =  y  .   \n\nx')).
+            toEqual(
                 letExpression(
                     variable('x'),
                     variable('y'),
@@ -98,15 +97,15 @@ suite('Parser', () => {
     })
 
     test('number literals', () => {
-        assert.that(parseExpression('12')).
-            isEqualTo(
+        expect(parseExpression('12')).
+            toEqual(
                 number(12)
             )
     })
 
     test('number literals in applications', () => {
-        assert.that(parseExpression('1 2 3')).
-            isEqualTo(
+        expect(parseExpression('1 2 3')).
+            toEqual(
                 application(
                     application(number(1), number(2)),
                     number(3)
@@ -115,8 +114,8 @@ suite('Parser', () => {
     })
 
     test('infix operators with numbers', () => {
-        assert.that(parseExpression('1 + 2')).
-            isEqualTo(
+        expect(parseExpression('1 + 2')).
+            toEqual(
                 infixApplication(
                     variable('+'),
                     number(1),
@@ -126,8 +125,8 @@ suite('Parser', () => {
     })
 
     test('infix operators with applications', () => {
-        assert.that(parseExpression('f x + f y')).
-            isEqualTo(
+        expect(parseExpression('f x + f y')).
+            toEqual(
                 infixApplication(
                     variable('+'),
                     application(variable('f'), variable('x')),
@@ -137,8 +136,8 @@ suite('Parser', () => {
     })
 
     test('infix operator as let variable', () => {
-        assert.that(parseExpression('let + = x. +')).
-            isEqualTo(
+        expect(parseExpression('let + = x. +')).
+            toEqual(
                 letExpression(
                     variable('+'),
                     variable('x'),
@@ -148,8 +147,8 @@ suite('Parser', () => {
     })
 
     test('infix operator bound in abstraction', () => {
-        assert.that(parseExpression('(λ+.+)')).
-            isEqualTo(
+        expect(parseExpression('(λ+.+)')).
+            toEqual(
                 lambda(
                     variable('+'),
                     variable('+'),
@@ -158,8 +157,8 @@ suite('Parser', () => {
     })
 
     test('chained infix operators', () => {
-        assert.that(parseExpression('1 + 2 + 3')).
-            isEqualTo(
+        expect(parseExpression('1 + 2 + 3')).
+            toEqual(
                 infixApplication(
                     variable('+'),
                     infixApplication(
@@ -173,8 +172,8 @@ suite('Parser', () => {
     })
 
     test('infix operators as application arguments', () => {
-        assert.that(parseExpression('f (+) 2')).
-            isEqualTo(
+        expect(parseExpression('f (+) 2')).
+            toEqual(
                 application(
                     application(
                         variable('f'),
@@ -186,8 +185,8 @@ suite('Parser', () => {
     })
 
     test('infix operators as application functions', () => {
-        assert.that(parseExpression('(+) 2')).
-            isEqualTo(
+        expect(parseExpression('(+) 2')).
+            toEqual(
                 application(
                     variable('+'),
                     number(2)
@@ -196,8 +195,8 @@ suite('Parser', () => {
     })
 
     test('infix operators as application functions without parenthesis', () => {
-        assert.that(parseExpression('+ 2')).
-            isEqualTo(
+        expect(parseExpression('+ 2')).
+            toEqual(
                 application(
                     variable('+'),
                     number(2)

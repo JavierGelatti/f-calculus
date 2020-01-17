@@ -1,19 +1,18 @@
-const { suite, test, before, assert } = require('@pmoo/testy')
 const { execSync } = require('child_process')
 const { repl, colors: { off, bold, cyan } } = require('../src/repl')
 
-suite('Read Eval Print Loop', () => {
+describe('Read Eval Print Loop', () => {
     let output
     const testConsole = { log(message) { output += message + '\n' } }
 
-    before(() => { output = '' })
+    beforeEach(() => { output = '' })
 
     test('correct code evaluation', async () => {
         const prompt = promptWithInput('x', 'let x = 2', 'x')
 
         await repl(prompt, testConsole)
 
-        assert.that(output).isEqualTo('λ x\nλ λ 2\nλ bye!\n')
+        expect(output).toEqual('λ x\nλ λ 2\nλ bye!\n')
     })
 
     test('parse error', async () => {
@@ -21,8 +20,8 @@ suite('Read Eval Print Loop', () => {
 
         await repl(prompt, testConsole)
 
-        assert.isTrue(output.includes('Error'))
-        assert.isTrue(output.endsWith('bye!\n'))
+        expect(output.includes('Error')).toEqual(true)
+        expect(output.endsWith('bye!\n')).toEqual(true)
     })
     
     test('end-to-end interaction', () => {
@@ -31,18 +30,18 @@ suite('Read Eval Print Loop', () => {
             { input: 'let id = (\\x.x). id 42\n' }
         ).toString()
 
-        assert.that(stdout).
-            isEqualTo(`${bold}${cyan}λ${off} 42\n${bold}${cyan}λ${off} `)
+        expect(stdout).
+            toEqual(`${bold}${cyan}λ${off} 42\n${bold}${cyan}λ${off} `)
     })
 
     function promptWithInput(...input) {
         return promptText => {
-            assert.isTrue(promptText.trim().length > 0)
-            assert.isTrue(promptText.endsWith(' '))
+            expect(promptText.trim().length > 0).toEqual(true)
+            expect(promptText.endsWith(' ')).toEqual(true)
 
             output += 'λ '
 
             return Promise.resolve(input.shift() || 'exit')
-        }
+        };
     }
 })

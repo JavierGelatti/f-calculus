@@ -1,8 +1,6 @@
-const { suite, test, assert } = require('@pmoo/testy')
-
 const { variable, application, lambda, letExpression, hole, number } = require('../src/ast')
 
-suite('syntatic unsugaring', () => {
+describe('syntatic unsugaring', () => {
     test('let expressions are transformed into applications', () => {
         const letExpr = letExpression(
             variable('x'),
@@ -10,7 +8,7 @@ suite('syntatic unsugaring', () => {
             variable('z')
         )
 
-        assert.that(letExpr.unsugar()).isEqualTo(
+        expect(letExpr.unsugar()).toEqual(
             application(
                 lambda(variable('x'), variable('z')),
                 variable('y')
@@ -19,7 +17,7 @@ suite('syntatic unsugaring', () => {
     })
 
     test('can unsugar zero', () => {
-        assert.that(number(0).unsugar()).isEqualTo(
+        expect(number(0).unsugar()).toEqual(
             lambda(variable('f'),
                 lambda(variable('x'), variable('x'))
             )
@@ -27,7 +25,7 @@ suite('syntatic unsugaring', () => {
     })
 
     test('can unsugar integers greater than zero', () => {
-        assert.that(number(2).unsugar()).isEqualTo(
+        expect(number(2).unsugar()).toEqual(
             lambda(variable('f'),
                 lambda(variable('x'), application(variable('f'), application(variable('f'), variable('x'))))
             )
@@ -43,7 +41,7 @@ suite('syntatic unsugaring', () => {
         ]
 
         for (const astNode of asts) {
-            assert.that(astNode.unsugar()).isEqualTo(astNode)
+            expect(astNode.unsugar()).toEqual(astNode)
         }
     })
 })

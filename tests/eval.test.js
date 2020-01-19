@@ -1,4 +1,4 @@
-const { identifier, application, infixApplication, lambda, letExpression, number, primitive } = require('../src/ast')
+const { identifier, application, infixApplication, lambda, letExpression, number, primitive, pair } = require('../src/ast')
 
 describe('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {
@@ -190,7 +190,28 @@ describe('Beta reduction', () => {
         expect(result).toEqual(identifier('y'))
     })
 
-    function apply(abstraction, argument) {
-        return application(abstraction, argument).betaReduced()
+    test('getting first of pairs', () => {
+        const expr = application(
+            pair(number(1), number(2)),
+            lambda(identifier('x'), lambda(identifier('y'), identifier('x')))
+        )
+
+        expect(expr.fullBetaReduce()).toEqual(number(1))
+    })
+
+    test('getting second of pairs', () => {
+        const expr = application(
+            pair(number(1), number(2)),
+            lambda(identifier('x'), lambda(identifier('y'), identifier('y')))
+        )
+
+        expect(expr.fullBetaReduce()).toEqual(number(2))
+    })
+
+    function apply(abstraction, firstArgument, ...args) {
+        return args.reduce(
+            application,
+            application(abstraction, firstArgument)
+        ).fullBetaReduce()
     }
 })

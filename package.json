@@ -1,7 +1,7 @@
 {
   "name": "f-calculus",
   "version": "1.0.0",
-  "description": "",
+  "description": "A programming language where everything is a function",
   "main": "index.js",
   "scripts": {
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
@@ -14,6 +14,6 @@
     "eslint": "^6.8.0",
     "jest": "^24.9.0"
   },
-  "author": "",
+  "author": "Facundo Javier Gelatti <javiergelatti@gmail.com>",
   "license": "MIT"
 }

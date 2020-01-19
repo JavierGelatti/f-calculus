@@ -1,8 +1,4 @@
-const { primitive, application, number, letExpression, variable } = require('./ast')
-
-const withPrimitiveBindings = function(expression) {
-    return letExpression(variable('asNumber'), asNumber, expression)
-}
+const { primitive, application, number, letExpression, variable, lambda, pair } = require('./ast')
 
 const asNumber = primitive(anExpression => {
     if (anExpression.constructor.name !== 'Abstraction') {
@@ -32,5 +28,49 @@ const asNumber = primitive(anExpression => {
     }
 })
 
+const makePair = lambda(variable('first'), lambda(variable('second'), pair(variable('first'), variable('second'))))
 
-module.exports = { withPrimitiveBindings, asNumber }
+const first = lambda(
+    variable('pair'),
+    application(
+        variable('pair'),
+        lambda(variable('first'), lambda(variable('second'), variable('first')))
+    )
+)
+
+const second = lambda(
+    variable('pair'),
+    application(
+        variable('pair'),
+        lambda(variable('first'), lambda(variable('second'), variable('second')))
+    )
+)
+
+const asPair = primitive(anExpression => {
+    if (anExpression.constructor.name === 'Abstraction') {
+        const firstValue = application(first, anExpression).betaReduced().betaReduced()
+        const secondValue = application(second, anExpression).betaReduced().betaReduced()
+
+        return pair(firstValue, secondValue)
+    } else {
+        return anExpression
+    }
+})
+
+const allPrimitives = {
+    asNumber,
+    asPair,
+    first,
+    second,
+    ',': makePair
+}
+
+const withPrimitiveBindings = function(expression) {
+    return Object.entries(allPrimitives).reduce(
+        (previous, [primitiveName, primitive]) =>
+            letExpression(variable(primitiveName), primitive, previous),
+        expression
+    )
+}
+
+module.exports = { withPrimitiveBindings, ...allPrimitives }

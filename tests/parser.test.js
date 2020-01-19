@@ -40,6 +40,27 @@ describe('Parser', () => {
         )
     })
 
+    test('application with redundant parentheses', () => {
+        expect(parseExpression('f(x)')).toEqual(
+            application(
+                identifier('f'),
+                identifier('x')
+            )
+        )
+    })
+
+    test('application chain with redundant parentheses', () => {
+        expect(parseExpression('f(x)(y)')).toEqual(
+            application(
+                application(
+                    identifier('f'),
+                    identifier('x')
+                ),
+                identifier('y')
+            )
+        )
+    })
+
     test('application inside lambda', () => {
         expect(parseExpression('λx.x x')).toEqual(lambda(identifier('x'), application(identifier('x'), identifier('x'))))
     })

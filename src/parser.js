@@ -75,7 +75,7 @@ const applicationTermParser = choice([lambdaParser, variableParser, numberParser
 const applicationParser = pipeParsers([
     sequenceOf([
         choice([applicationTermParser, infixOperatorParser]),
-        many1(takeRight(whitespace)(applicationTermParser))
+        many1(takeRight(optionalWhitespace)(applicationTermParser))
     ]),
     mapTo(([abstraction, args]) => {
         return args.reduce(

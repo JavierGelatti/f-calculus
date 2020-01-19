@@ -4,6 +4,7 @@
   "description": "A programming language where everything is a function",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "test": "jest"
   },

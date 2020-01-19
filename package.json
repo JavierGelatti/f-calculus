@@ -2,7 +2,11 @@
   "name": "f-calculus",
   "version": "1.0.0",
   "description": "A programming language where everything is a function",
-  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/javiergelatti/f-calculus"
+  },
+  "main": "src/f_calculus.js",
   "scripts": {
     "lint": "eslint .",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",

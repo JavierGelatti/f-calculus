@@ -1,5 +1,4 @@
-const { withPrimitiveBindings } = require('./primitives')
-const { parseExpression } = require('./parser')
+const { evaluate, parse } = require('./f_calculus')
 
 // Colors and emphasis
 const off = '\x1b[0m'
@@ -15,9 +14,10 @@ function repl(prompt, console = global.console) {
             return
         }
 
-        let expression
         try {
-            expression = withPrimitiveBindings(parseExpression(backlog + code))
+            const result = evaluate(backlog + code)
+            console.log(result.toString())
+            return repl(prompt, console)
         } catch (ex) {
             if (validSyntax(code + '._')) {
                 backlog += code + '.'
@@ -26,10 +26,6 @@ function repl(prompt, console = global.console) {
                 throw ex
             }
         }
-
-        const result = expression.fullBetaReduce()
-        console.log(result.toString())
-        return repl(prompt, console)
     }).catch(error => {
         console.log(error)
         return repl(prompt, console)
@@ -38,7 +34,7 @@ function repl(prompt, console = global.console) {
 
 function validSyntax(text) {
     try {
-        parseExpression(text)
+        parse(text)
         return true
     } catch (ex) {
         return false

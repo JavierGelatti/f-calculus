@@ -5,7 +5,7 @@ const { application } = require('./application')
 
 class NumberLiteral extends SugarExpression {
     constructor(value) {
-        if (typeof value !== 'number') throw new Error(`${value} is not a number`)
+        if (typeof value !== 'number') throw new Error(`${value} (${value.constructor.name}) is not a number`)
         super()
         this.value = value
     }

@@ -1,7 +1,7 @@
 const { Expression } = require('./expression')
 const { identifier } = require('./identifier')
 
-class Abstraction extends Expression {
+class Lambda extends Expression {
     constructor(boundVariable, body) {
         super()
         this.boundVariable = boundVariable
@@ -48,14 +48,14 @@ class Abstraction extends Expression {
     }
 
     accept(visitor) {
-        return visitor.visitAbstraction(this)
+        return visitor.visitLambda(this)
     }
 
     replace(toBeReplaced, replacement) {
         if (this === toBeReplaced) {
             return replacement
         } else {
-            return new Abstraction(
+            return new Lambda(
                 this.boundVariable.replace(toBeReplaced, replacement),
                 this.body.replace(toBeReplaced, replacement)
             )
@@ -64,7 +64,7 @@ class Abstraction extends Expression {
 }
 
 function lambda(variable, body) {
-    return new Abstraction(variable, body)
+    return new Lambda(variable, body)
 }
 
 function includes(list, value) {

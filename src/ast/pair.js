@@ -1,7 +1,7 @@
 
 const { SugarExpression } = require('./sugar_expression')
 const { identifier } = require('./identifier')
-const { lambda } = require('./abstraction')
+const { lambda } = require('./lambda')
 const { application } = require('./application')
 
 class Pair extends SugarExpression {

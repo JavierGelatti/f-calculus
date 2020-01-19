@@ -1,7 +1,7 @@
 const { primitive, application, number, letExpression, identifier, lambda, pair } = require('./ast')
 
 const asNumber = primitive(anExpression => {
-    if (anExpression.constructor.name !== 'Abstraction') {
+    if (anExpression.constructor.name !== 'Lambda') {
         return anExpression
     }
 
@@ -47,7 +47,7 @@ const second = lambda(
 )
 
 const asPair = primitive(anExpression => {
-    if (anExpression.constructor.name === 'Abstraction') {
+    if (anExpression.constructor.name === 'Lambda') {
         const firstValue = application(first, anExpression).betaReduced().betaReduced()
         const secondValue = application(second, anExpression).betaReduced().betaReduced()
 

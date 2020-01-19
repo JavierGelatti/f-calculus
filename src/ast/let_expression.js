@@ -1,7 +1,7 @@
 
 const { SugarExpression } = require('./sugar_expression')
 const { application } = require('./application')
-const { lambda } = require('./abstraction')
+const { lambda } = require('./lambda')
 
 class LetExpression extends SugarExpression {
     constructor(variable, value, expression) {

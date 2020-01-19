@@ -1,5 +1,5 @@
 const { SugarExpression } = require('./sugar_expression')
-const { variable } = require('./variable')
+const { identifier } = require('./identifier')
 const { lambda } = require('./abstraction')
 const { application } = require('./application')
 
@@ -11,11 +11,11 @@ class NumberLiteral extends SugarExpression {
     }
 
     unsugar() {
-        let body = variable('x')
+        let body = identifier('x')
         for (let i = 0; i < this.value; i++) {
-            body = application(variable('f'), body)
+            body = application(identifier('f'), body)
         }
-        return lambda(variable('f'), lambda(variable('x'), body))
+        return lambda(identifier('f'), lambda(identifier('x'), body))
     }
 
     toString() {

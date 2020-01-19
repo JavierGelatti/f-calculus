@@ -1,6 +1,6 @@
 
 const { SugarExpression } = require('./sugar_expression')
-const { variable } = require('./variable')
+const { identifier } = require('./identifier')
 const { lambda } = require('./abstraction')
 const { application } = require('./application')
 
@@ -12,7 +12,7 @@ class Pair extends SugarExpression {
     }
 
     unsugar() {
-        return lambda(variable('f'), application(application(variable('f'), this.first), this.second))
+        return lambda(identifier('f'), application(application(identifier('f'), this.first), this.second))
     }
 
     toString() {
@@ -22,7 +22,7 @@ class Pair extends SugarExpression {
     freeVariables() {
         return [...this.first.freeVariables(), ...this.second.freeVariables()]
     }
-    
+
     betaReduced() {
         return this
     }

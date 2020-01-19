@@ -1,42 +1,42 @@
-const { variable, application, lambda, letExpression, hole, number } = require('../src/ast')
+const { identifier, application, lambda, letExpression, hole, number } = require('../src/ast')
 
 describe('syntatic unsugaring', () => {
     test('let expressions are transformed into applications', () => {
         const letExpr = letExpression(
-            variable('x'),
-            variable('y'),
-            variable('z')
+            identifier('x'),
+            identifier('y'),
+            identifier('z')
         )
 
         expect(letExpr.unsugar()).toEqual(
             application(
-                lambda(variable('x'), variable('z')),
-                variable('y')
+                lambda(identifier('x'), identifier('z')),
+                identifier('y')
             )
         )
     })
 
     test('can unsugar zero', () => {
         expect(number(0).unsugar()).toEqual(
-            lambda(variable('f'),
-                lambda(variable('x'), variable('x'))
+            lambda(identifier('f'),
+                lambda(identifier('x'), identifier('x'))
             )
         )
     })
 
     test('can unsugar integers greater than zero', () => {
         expect(number(2).unsugar()).toEqual(
-            lambda(variable('f'),
-                lambda(variable('x'), application(variable('f'), application(variable('f'), variable('x'))))
+            lambda(identifier('f'),
+                lambda(identifier('x'), application(identifier('f'), application(identifier('f'), identifier('x'))))
             )
         )
     })
 
     test('non-syntactic-sugar nodes do not change', () => {
         const asts = [
-            variable('x'),
-            lambda(variable('x'), variable('y')),
-            application(variable('x'), variable('y')),
+            identifier('x'),
+            lambda(identifier('x'), identifier('y')),
+            application(identifier('x'), identifier('y')),
             hole()
         ]
 

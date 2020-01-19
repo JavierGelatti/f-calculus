@@ -1,5 +1,5 @@
 const { Expression } = require('./expression')
-const { variable } = require('./variable')
+const { identifier } = require('./identifier')
 
 class Abstraction extends Expression {
     constructor(boundVariable, body) {
@@ -26,16 +26,16 @@ class Abstraction extends Expression {
         }
     }
 
-    alphaConvertNotToHave(notWantedVariables) {
-        let allVariables = 'abcdefghijklmnopqrstuvwxyz'.split('')//.map(v => variable('_' + v));
-        let newVariableName = allVariables.find(v => !includes(notWantedVariables, v))
-        return this.alphaConvert(newVariableName)
+    alphaConvertNotToHave(notWantedIdentifiers) {
+        const allIdentifiers = 'abcdefghijklmnopqrstuvwxyz'.split('')//.map(v => identifier('_' + v));
+        const newIdentifierName = allIdentifiers.find(v => !includes(notWantedIdentifiers, v))
+        return this.alphaConvert(newIdentifierName)
     }
 
-    alphaConvert(newVariableName) {
-        let newVariable = variable(newVariableName)
-        if (includes(this.body.freeVariables(), newVariable)) throw new Error('The variable ' + newVariableName + ' is free in the body')
-        return lambda(newVariable, this.body.replaceFreeVariable(this.boundVariable, newVariable))
+    alphaConvert(newIdentifierName) {
+        const newIdentifier = identifier(newIdentifierName)
+        if (includes(this.body.freeVariables(), newIdentifier)) throw new Error('The variable ' + newIdentifierName + ' is free in the body')
+        return lambda(newIdentifier, this.body.replaceFreeVariable(this.boundVariable, newIdentifier))
     }
 
     freeVariables() {

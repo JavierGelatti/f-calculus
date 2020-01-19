@@ -1,32 +1,32 @@
-const { variable, application, infixApplication, lambda, letExpression, number } = require('../src/ast')
+const { identifier, application, infixApplication, lambda, letExpression, number } = require('../src/ast')
 const { parseExpression } = require('../src/parser')
 
 describe('Parser', () => {
     test('variables', () => {
-        expect(parseExpression('asd')).toEqual(variable('asd'))
+        expect(parseExpression('asd')).toEqual(identifier('asd'))
     })
 
     test('variables with numbers', () => {
-        expect(parseExpression('asd123')).toEqual(variable('asd123'))
+        expect(parseExpression('asd123')).toEqual(identifier('asd123'))
     })
 
     test('lambdas', () => {
-        expect(parseExpression('λx.x')).toEqual(lambda(variable('x'), variable('x')))
+        expect(parseExpression('λx.x')).toEqual(lambda(identifier('x'), identifier('x')))
     })
 
     test('lambdas with spaces', () => {
-        expect(parseExpression('λx . x')).toEqual(lambda(variable('x'), variable('x')))
+        expect(parseExpression('λx . x')).toEqual(lambda(identifier('x'), identifier('x')))
     })
 
     test('application', () => {
-        expect(parseExpression('x y')).toEqual(application(variable('x'), variable('y')))
+        expect(parseExpression('x y')).toEqual(application(identifier('x'), identifier('y')))
     })
 
     test('application with whitespace in between', () => {
         expect(parseExpression('x\n  y\n  z')).toEqual(
             application(
-                application(variable('x'), variable('y')),
-                variable('z')
+                application(identifier('x'), identifier('y')),
+                identifier('z')
             )
         )
     })
@@ -34,53 +34,53 @@ describe('Parser', () => {
     test('application with whitespace at the end', () => {
         expect(parseExpression('f x ')).toEqual(
             application(
-                variable('f'),
-                variable('x')
+                identifier('f'),
+                identifier('x')
             )
         )
     })
 
     test('application inside lambda', () => {
-        expect(parseExpression('λx.x x')).toEqual(lambda(variable('x'), application(variable('x'), variable('x'))))
+        expect(parseExpression('λx.x x')).toEqual(lambda(identifier('x'), application(identifier('x'), identifier('x'))))
     })
 
     test('nested lambdas', () => {
         expect(parseExpression('λx.λy.x')).
-            toEqual(lambda(variable('x'), lambda(variable('y'), variable('x'))))
+            toEqual(lambda(identifier('x'), lambda(identifier('y'), identifier('x'))))
     })
 
     test('nested application', () => {
         expect(parseExpression('x y z')).
-            toEqual(application(application(variable('x'), variable('y')), variable('z')))
+            toEqual(application(application(identifier('x'), identifier('y')), identifier('z')))
     })
 
     test('parentheses in application function', () => {
         expect(parseExpression('(λx.x) y')).
-            toEqual(application(lambda(variable('x'), variable('x')), variable('y')))
+            toEqual(application(lambda(identifier('x'), identifier('x')), identifier('y')))
     })
 
     test('parentheses in application argument', () => {
         expect(parseExpression('(λx.x) (y)')).
-            toEqual(application(lambda(variable('x'), variable('x')), variable('y')))
+            toEqual(application(lambda(identifier('x'), identifier('x')), identifier('y')))
     })
 
     test('parentheses in variables', () => {
         expect(parseExpression('(x)')).
-            toEqual(variable('x'))
+            toEqual(identifier('x'))
     })
 
     test('nested parentheses', () => {
         expect(parseExpression('((λx.((x))))')).
-            toEqual(lambda(variable('x'), variable('x')))
+            toEqual(lambda(identifier('x'), identifier('x')))
     })
 
     test('let expressions', () => {
         expect(parseExpression('let x = y. x')).
             toEqual(
                 letExpression(
-                    variable('x'),
-                    variable('y'),
-                    variable('x')
+                    identifier('x'),
+                    identifier('y'),
+                    identifier('x')
                 )
             )
     })
@@ -89,9 +89,9 @@ describe('Parser', () => {
         expect(parseExpression('let  x  =  y  .   \n\nx')).
             toEqual(
                 letExpression(
-                    variable('x'),
-                    variable('y'),
-                    variable('x')
+                    identifier('x'),
+                    identifier('y'),
+                    identifier('x')
                 )
             )
     })
@@ -117,7 +117,7 @@ describe('Parser', () => {
         expect(parseExpression('1 + 2')).
             toEqual(
                 infixApplication(
-                    variable('+'),
+                    identifier('+'),
                     number(1),
                     number(2)
                 )
@@ -128,9 +128,9 @@ describe('Parser', () => {
         expect(parseExpression('f x + f y')).
             toEqual(
                 infixApplication(
-                    variable('+'),
-                    application(variable('f'), variable('x')),
-                    application(variable('f'), variable('y'))
+                    identifier('+'),
+                    application(identifier('f'), identifier('x')),
+                    application(identifier('f'), identifier('y'))
                 )
             )
     })
@@ -139,9 +139,9 @@ describe('Parser', () => {
         expect(parseExpression('let + = x. +')).
             toEqual(
                 letExpression(
-                    variable('+'),
-                    variable('x'),
-                    variable('+'),
+                    identifier('+'),
+                    identifier('x'),
+                    identifier('+'),
                 )
             )
     })
@@ -150,8 +150,8 @@ describe('Parser', () => {
         expect(parseExpression('(λ+.+)')).
             toEqual(
                 lambda(
-                    variable('+'),
-                    variable('+'),
+                    identifier('+'),
+                    identifier('+'),
                 )
             )
     })
@@ -160,9 +160,9 @@ describe('Parser', () => {
         expect(parseExpression('1 + 2 + 3')).
             toEqual(
                 infixApplication(
-                    variable('+'),
+                    identifier('+'),
                     infixApplication(
-                        variable('+'),
+                        identifier('+'),
                         number(1),
                         number(2)
                     ),
@@ -176,8 +176,8 @@ describe('Parser', () => {
             toEqual(
                 application(
                     application(
-                        variable('f'),
-                        variable('+')
+                        identifier('f'),
+                        identifier('+')
                     ),
                     number(2)
                 )
@@ -188,7 +188,7 @@ describe('Parser', () => {
         expect(parseExpression('(+) 2')).
             toEqual(
                 application(
-                    variable('+'),
+                    identifier('+'),
                     number(2)
                 )
             )
@@ -198,7 +198,7 @@ describe('Parser', () => {
         expect(parseExpression('+ 2')).
             toEqual(
                 application(
-                    variable('+'),
+                    identifier('+'),
                     number(2)
                 )
             )

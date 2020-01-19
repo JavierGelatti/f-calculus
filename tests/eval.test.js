@@ -1,61 +1,61 @@
-const { variable, application, infixApplication, lambda, letExpression, number, primitive } = require('../src/ast')
+const { identifier, application, infixApplication, lambda, letExpression, number, primitive } = require('../src/ast')
 
 describe('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {
-        expect(variable('x').betaReduced()).
-            toEqual(variable('x'))
+        expect(identifier('x').betaReduced()).
+            toEqual(identifier('x'))
     })
 
     test('beta reduction of an abstraction is the abstraction', () => {
-        let abstraction = lambda(variable('x'), variable('x'))
+        let abstraction = lambda(identifier('x'), identifier('x'))
 
         expect(abstraction.betaReduced()).
             toEqual(abstraction)
     })
 
     test('application without replacing', () => {
-        let abstraction = lambda(variable('x'), variable('z'))
-        let argument = variable('y')
+        let abstraction = lambda(identifier('x'), identifier('z'))
+        let argument = identifier('y')
 
-        expect(apply(abstraction, argument)).toEqual(variable('z'))
+        expect(apply(abstraction, argument)).toEqual(identifier('z'))
     })
 
     test('application replacing a variable', () => {
-        let abstraction = lambda(variable('x'), variable('x'))
-        let argument = variable('y')
+        let abstraction = lambda(identifier('x'), identifier('x'))
+        let argument = identifier('y')
 
         expect(apply(abstraction, argument)).toEqual(argument)
     })
 
     test('application replacing a free variable inside a lambda', () => {
-        let abstraction = lambda(variable('x'), lambda(variable('y'), variable('x')))
-        let argument = variable('z')
+        let abstraction = lambda(identifier('x'), lambda(identifier('y'), identifier('x')))
+        let argument = identifier('z')
 
-        expect(apply(abstraction, argument)).toEqual(lambda(variable('y'), variable('z')))
+        expect(apply(abstraction, argument)).toEqual(lambda(identifier('y'), identifier('z')))
     })
 
     test('application not replacing a bound variable inside a lambda', () => {
-        let abstraction = lambda(variable('x'), lambda(variable('x'), variable('x')))
-        let argument = variable('z')
+        let abstraction = lambda(identifier('x'), lambda(identifier('x'), identifier('x')))
+        let argument = identifier('z')
 
-        expect(apply(abstraction, argument)).toEqual(lambda(variable('x'), variable('x')))
+        expect(apply(abstraction, argument)).toEqual(lambda(identifier('x'), identifier('x')))
     })
 
     test('application not replacing variables on an application', () => {
-        let abstraction = lambda(variable('x'), application(variable('x'), variable('x')))
+        let abstraction = lambda(identifier('x'), application(identifier('x'), identifier('x')))
 
-        expect(apply(abstraction, variable('y')).equals(application(variable('y'), variable('y')))).toEqual(true)
+        expect(apply(abstraction, identifier('y')).equals(application(identifier('y'), identifier('y')))).toEqual(true)
     })
 
     test('nested application on nested lambda', () => {
-        let abstraction = lambda(variable('x'), lambda(variable('y'), variable('x')))
+        let abstraction = lambda(identifier('x'), lambda(identifier('y'), identifier('x')))
 
         expect(
             application(
-                application(abstraction, variable('a')),
-                variable('b')
+                application(abstraction, identifier('a')),
+                identifier('b')
             ).betaReduced().betaReduced().equals(
-                variable('a')
+                identifier('a')
             )
         ).toEqual(true)
     })
@@ -63,102 +63,102 @@ describe('Beta reduction', () => {
     test('application of free variables', () => {
         expect(
             application(
-                variable('a'),
-                variable('b')
+                identifier('a'),
+                identifier('b')
             ).betaReduced().equals(
                 application(
-                    variable('a'),
-                    variable('b')
+                    identifier('a'),
+                    identifier('b')
                 )
             )
         ).toEqual(true)
     })
 
     test('full beta reduce', () => {
-        let abstraction = lambda(variable('x'), lambda(variable('y'), variable('y')))
+        let abstraction = lambda(identifier('x'), lambda(identifier('y'), identifier('y')))
 
         expect(
             application(
-                application(abstraction, variable('a')),
-                application(variable('p'), variable('q'))
+                application(abstraction, identifier('a')),
+                application(identifier('p'), identifier('q'))
             ).fullBetaReduce().equals(
-                application(variable('p'), variable('q'))
+                application(identifier('p'), identifier('q'))
             )
         ).toEqual(true)
     })
 
     test('free vs bound while reducing', () => {
-        let abstraction = lambda(variable('x'), lambda(variable('y'), variable('x')))
+        let abstraction = lambda(identifier('x'), lambda(identifier('y'), identifier('x')))
 
         expect(
             application(
-                application(abstraction, variable('y')),
-                variable('z')
+                application(abstraction, identifier('y')),
+                identifier('z')
             ).fullBetaReduce().equals(
-                variable('y')
+                identifier('y')
             )
         ).toEqual(true)
     })
 
     test('alpha conversion ok', () => {
-        let abstraction = lambda(variable('x'), variable('x'))
+        let abstraction = lambda(identifier('x'), identifier('x'))
 
         expect(abstraction.alphaConvert('y').
-            equals(lambda(variable('y'), variable('y')))).toEqual(true)
+            equals(lambda(identifier('y'), identifier('y')))).toEqual(true)
     })
 
     test('alpha conversion error', () => {
-        let abstraction = lambda(variable('x'), variable('y'))
+        let abstraction = lambda(identifier('x'), identifier('y'))
 
         expect(() => abstraction.alphaConvert('y')).toThrow(/The variable y is free in the body/)
     })
 
     test('let expressions', () => {
         const letExpr = letExpression(
-            variable('x'),
-            lambda(variable('y'), variable('y')),
-            application(variable('x'), variable('z'))
+            identifier('x'),
+            lambda(identifier('y'), identifier('y')),
+            application(identifier('x'), identifier('z'))
         )
 
-        expect(letExpr.fullBetaReduce()).toEqual(variable('z'))
+        expect(letExpr.fullBetaReduce()).toEqual(identifier('z'))
     })
 
     test('nested let expressions bodies', () => {
         const letExpr = letExpression(
-            variable('x'),
-            variable('y'),
+            identifier('x'),
+            identifier('y'),
             letExpression(
-                variable('x'),
-                variable('z'),
-                variable('x')
+                identifier('x'),
+                identifier('z'),
+                identifier('x')
             )
         )
 
-        expect(letExpr.fullBetaReduce()).toEqual(variable('z'))
+        expect(letExpr.fullBetaReduce()).toEqual(identifier('z'))
     })
 
     test('nested let expressions values', () => {
         const letExpr = letExpression(
-            variable('x'),
+            identifier('x'),
             letExpression(
-                variable('u'),
-                variable('v'),
-                variable('w')
+                identifier('u'),
+                identifier('v'),
+                identifier('w')
             ),
-            variable('x')
+            identifier('x')
         )
 
-        expect(letExpr.fullBetaReduce()).toEqual(variable('w'))
+        expect(letExpr.fullBetaReduce()).toEqual(identifier('w'))
     })
 
     test('numbers', () => {
         const expr = application(
-            lambda(variable('x'),
-                lambda(variable('y'), variable('x'))
+            lambda(identifier('x'),
+                lambda(identifier('y'), identifier('x'))
             ),
             number(0)
         )
-        expect(expr.fullBetaReduce()).toEqual(lambda(variable('y'), number(0)))
+        expect(expr.fullBetaReduce()).toEqual(lambda(identifier('y'), number(0)))
     })
 
     test('numbers reduction', () => {
@@ -167,11 +167,11 @@ describe('Beta reduction', () => {
 
     test('infix operators', () => {
         const expr = letExpression(
-            variable('+'),
-            lambda(variable('y'), lambda(variable('x'), variable('y'))),
-            infixApplication(variable('+'), variable('v'), variable('w'))
+            identifier('+'),
+            lambda(identifier('y'), lambda(identifier('x'), identifier('y'))),
+            infixApplication(identifier('+'), identifier('v'), identifier('w'))
         )
-        expect(expr.fullBetaReduce()).toEqual(variable('v'))
+        expect(expr.fullBetaReduce()).toEqual(identifier('v'))
     })
 
     test('js function evaluation', () => {
@@ -179,15 +179,15 @@ describe('Beta reduction', () => {
         const expr = application(
             primitive(x => {
                 valuePassedToJs = x
-                return variable('y')
+                return identifier('y')
             }),
-            variable('x')
+            identifier('x')
         )
 
         const result = expr.fullBetaReduce()
 
-        expect(valuePassedToJs).toEqual(variable('x'))
-        expect(result).toEqual(variable('y'))
+        expect(valuePassedToJs).toEqual(identifier('x'))
+        expect(result).toEqual(identifier('y'))
     })
 
     function apply(abstraction, argument) {

@@ -1,7 +1,7 @@
 const { Expression } = require('./expression')
 const { application } = require('./application')
 
-class Variable extends Expression {
+class Identifier extends Expression {
     constructor(name) {
         super()
         this.name = name
@@ -44,8 +44,8 @@ class Variable extends Expression {
     }
 }
 
-function variable(name) {
-    return new Variable(name)
+function identifier(name) {
+    return new Identifier(name)
 }
 
-module.exports = { variable }
+module.exports = { identifier }

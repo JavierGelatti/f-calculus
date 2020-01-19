@@ -23,7 +23,7 @@ describe('Read Eval Print Loop', () => {
         expect(output.includes('Error')).toEqual(true)
         expect(output.endsWith('bye!\n')).toEqual(true)
     })
-    
+
     test('end-to-end interaction', () => {
         const stdout = execSync(
             'node index.js',
@@ -42,6 +42,6 @@ describe('Read Eval Print Loop', () => {
             output += 'λ '
 
             return Promise.resolve(input.shift() || 'exit')
-        };
+        }
     }
 })

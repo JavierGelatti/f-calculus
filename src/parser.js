@@ -1,4 +1,4 @@
-const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anythingExcept, many, whitespace, optionalWhitespace } = require('arcsecond')
+const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anythingExcept, many, optionalWhitespace } = require('arcsecond')
 const { identifier, lambda, application, infixApplication, hole, letExpression, number } = require('./ast')
 
 const expressionParser = recursiveParser(() => pipeParsers([

@@ -1,5 +1,5 @@
 const { primitive, application, lambda, identifier, number } = require('../src/ast')
-const { ',': makePair } = require('../src/primitives')
+const { ',': makePair, asNumber } = require('../src/primitives')
 const { parseExpression } = require('../src/parser')
 
 describe('string representation', () => {
@@ -37,6 +37,11 @@ describe('string representation', () => {
 
         expect(primitivePair(application(id, number(1)), number(2)).toString()).
             toEqual('(((λx.x) 1), 2)')
+    })
+
+    test('primitives', () => {
+        expect(asNumber.toString()).
+            toEqual('<primitive: asNumber>')
     })
 
     function primitivePair(first, second) {

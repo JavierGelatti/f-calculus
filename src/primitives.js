@@ -26,7 +26,7 @@ const asNumber = primitive(anExpression => {
     } else {
         return anExpression
     }
-})
+}, '<primitive: asNumber>')
 
 const makePair = lambda(identifier('first'), lambda(identifier('second'), pair(identifier('first'), identifier('second'))))
 
@@ -57,7 +57,14 @@ const asPair = primitive(anExpression => {
     }
 })
 
+const off = '\x1b[0m'
+const cyan = '\x1b[36m'
+
 const allPrimitives = {
+    show: primitive(x => {
+        console.log(`${cyan}${x.toString()}${off}`)
+        return x
+    }),
     asNumber,
     asPair,
     first,

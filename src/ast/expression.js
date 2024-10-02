@@ -2,8 +2,8 @@ const { subclassResponsibility } = require('./../utils')
 
 class Expression {
     fullBetaReduce() {
-        var lastExpression = undefined
-        var currentExpression = this
+        let lastExpression = undefined
+        let currentExpression = this
 
         do {
             lastExpression = currentExpression

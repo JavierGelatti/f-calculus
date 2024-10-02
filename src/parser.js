@@ -1,4 +1,4 @@
-const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anythingExcept, many, optionalWhitespace } = require('arcsecond')
+const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anyCharExcept, many, optionalWhitespace } = require('arcsecond')
 const { identifier, lambda, application, infixApplication, hole, letExpression, number } = require('./ast')
 
 const expressionParser = recursiveParser(() => pipeParsers([
@@ -10,12 +10,12 @@ const variableParser = pipeParsers([
     sequenceOf([
         optionalWhitespace,
         letter,
-        many(anythingExcept(choice(invalidCharactersInIdentifiers)))
+        many(anyCharExcept(choice(invalidCharactersInIdentifiers)))
     ]),
     mapTo(([_whitespace, startOfVariable, restOfVariable]) => identifier([startOfVariable, ...restOfVariable].join('')))
 ])
 
-const infixOperatorCharacter = anythingExcept(choice([...invalidCharactersInIdentifiers, digit, letter]))
+const infixOperatorCharacter = anyCharExcept(choice([...invalidCharactersInIdentifiers, digit, letter]))
 const infixOperatorParser = pipeParsers([
     sequenceOf([
         takeRight(optionalWhitespace)(infixOperatorCharacter),

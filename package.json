@@ -13,11 +13,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "arcsecond": "^2.0.3"
+    "arcsecond": "^5.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "jest": "^26.1.0"
+    "eslint": "^9.11.1",
+    "jest": "^29.7.0"
   },
   "author": "Facundo Javier Gelatti <javiergelatti@gmail.com>",
   "license": "MIT"

@@ -14,7 +14,7 @@ export class Expression {
     }
 
     betaReduced() {
-        subclassResponsibility(this, 'betaReduced')
+        return subclassResponsibility(this, 'betaReduced')
     }
 
     equals(other) {
@@ -29,27 +29,27 @@ export class Expression {
     }
 
     freeVariables() {
-        subclassResponsibility(this, 'freeVariables')
+        return subclassResponsibility(this, 'freeVariables')
     }
 
     replaceFreeVariable(_oldVariable, _newValue) {
-        subclassResponsibility(this, 'replaceFreeVariable')
+        return subclassResponsibility(this, 'replaceFreeVariable')
     }
 
     applyTo(_argument) {
-        subclassResponsibility(this, 'applyTo')
+        return subclassResponsibility(this, 'applyTo')
     }
 
     toString() {
-        subclassResponsibility(this, 'toString')
+        return subclassResponsibility(this, 'toString')
     }
 
     accept(_visitor) {
-        subclassResponsibility(this, 'accept')
+        return subclassResponsibility(this, 'accept')
     }
 
     replace(_toBeReplaced, _replacement) {
-        subclassResponsibility(this, 'replace')
+        return subclassResponsibility(this, 'replace')
     }
 
     unsugar() {

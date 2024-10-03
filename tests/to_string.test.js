@@ -1,6 +1,7 @@
 import { application, identifier, lambda, number, primitive } from '../src/ast.js'
 import { parseExpression } from '../src/parser.js'
 import { asNumber, makePair } from '../src/primitives.js'
+import { namedExpression } from '../src/named_expression.js'
 
 describe('string representation', () => {
     test('application', () => {
@@ -30,6 +31,12 @@ describe('string representation', () => {
     test('js values', () => {
         expect(primitive(x => x).toString()).toEqual('<primitive: x => x>')
         expect(primitive(x => x, 'stuff').toString()).toEqual('stuff')
+    })
+
+    test('named expressions', () => {
+        expect(
+            namedExpression('y', identifier('x')).toString()
+        ).toEqual('y')
     })
 
     test('pairs', () => {

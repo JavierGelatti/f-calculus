@@ -1,4 +1,5 @@
 import { application, identifier, infixApplication, lambda, letExpression, number, pair, primitive } from '../src/ast.js'
+import { namedExpression } from '../src/named_expression.js'
 
 
 describe('Beta reduction', () => {
@@ -207,6 +208,34 @@ describe('Beta reduction', () => {
         )
 
         expect(expr.fullBetaReduce()).toEqual(number(2))
+    })
+
+    test('named expressions reduce to themselves if the inner expression reduces to itself', () => {
+        const namedExpr = namedExpression(
+            'y', identifier('x')
+        )
+
+        expect(namedExpr.fullBetaReduce()).toEqual(namedExpr)
+    })
+
+    test('named expressions reduce to its inner expression if it does not reduce to itself', () => {
+        const id = lambda(identifier('x'), identifier('x'))
+        const namedExpr = namedExpression(
+            'y',
+            application(id, id)
+        )
+
+        expect(namedExpr.fullBetaReduce()).toEqual(id)
+    })
+
+    test('named expressions behave like its inner expression', () => {
+        const constZ = lambda(identifier('x'), identifier('z'))
+        const namedExpr = namedExpression('y', constZ)
+
+        expect(namedExpr.freeVariables()).toEqual([identifier('z')])
+        expect(namedExpr.applyTo(identifier('w'))).toEqual(identifier('z'))
+        expect(namedExpr.replaceFreeVariable(identifier('z'), identifier('w')))
+            .toEqual(lambda(identifier('x'), identifier('w')))
     })
 
     function apply(abstraction, firstArgument, ...args) {

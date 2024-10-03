@@ -6,11 +6,12 @@
     "type": "git",
     "url": "https://github.com/javiergelatti/f-calculus"
   },
+  "type": "module",
   "main": "src/f_calculus.js",
   "scripts": {
     "lint": "eslint .",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test": "jest"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "dependencies": {
     "arcsecond": "^5.0.0"

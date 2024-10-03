@@ -1,7 +1,7 @@
-const { SugarExpression } = require('./sugar_expression')
-const { identifier } = require('./identifier')
-const { lambda } = require('./lambda')
-const { application } = require('./application')
+import { SugarExpression } from './sugar_expression.js'
+import { identifier } from './identifier.js'
+import { lambda } from './lambda.js'
+import { application } from './application.js'
 
 class NumberLiteral extends SugarExpression {
     constructor(value) {
@@ -43,8 +43,6 @@ class NumberLiteral extends SugarExpression {
     }
 }
 
-function number(value) {
+export function number(value) {
     return new NumberLiteral(value)
 }
-
-module.exports = { number }

@@ -1,5 +1,5 @@
-const { Expression } = require('./expression')
-const { application } = require('./application')
+import { application } from './application.js'
+import { Expression } from './expression.js'
 
 class Hole extends Expression {
     betaReduced() {
@@ -38,8 +38,6 @@ class Hole extends Expression {
     }
 }
 
-function hole() {
+export function hole() {
     return new Hole()
 }
-
-module.exports = { hole }

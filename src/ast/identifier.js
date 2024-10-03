@@ -1,5 +1,5 @@
-const { Expression } = require('./expression')
-const { application } = require('./application')
+import { Expression } from './expression.js'
+import { application } from './application.js'
 
 class Identifier extends Expression {
     constructor(name) {
@@ -44,8 +44,6 @@ class Identifier extends Expression {
     }
 }
 
-function identifier(name) {
+export function identifier(name) {
     return new Identifier(name)
 }
-
-module.exports = { identifier }

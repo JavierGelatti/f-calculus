@@ -1,5 +1,5 @@
-const { Expression } = require('./expression')
-const { identifier } = require('./identifier')
+import { Expression } from './expression.js'
+import { identifier } from './identifier.js'
 
 class Lambda extends Expression {
     constructor(boundVariable, body) {
@@ -63,12 +63,10 @@ class Lambda extends Expression {
     }
 }
 
-function lambda(variable, body) {
+export function lambda(variable, body) {
     return new Lambda(variable, body)
 }
 
 function includes(list, value) {
     return list.some(v => v.equals(value))
 }
-
-module.exports = { lambda }

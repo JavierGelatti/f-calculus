@@ -1,6 +1,6 @@
-const { primitive, application, lambda, identifier, number } = require('../src/ast')
-const { ',': makePair, asNumber } = require('../src/primitives')
-const { parseExpression } = require('../src/parser')
+import { application, identifier, lambda, number, primitive } from '../src/ast.js'
+import { parseExpression } from '../src/parser.js'
+import { asNumber, makePair } from '../src/primitives.js'
 
 describe('string representation', () => {
     test('application', () => {

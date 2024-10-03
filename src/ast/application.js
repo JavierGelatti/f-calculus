@@ -1,4 +1,4 @@
-const { Expression } = require('./expression')
+import { Expression } from './expression.js'
 
 class Application extends Expression {
     constructor(abstraction, argument) {
@@ -46,8 +46,6 @@ class Application extends Expression {
     }
 }
 
-function application(abstraction, argument) {
+export function application(abstraction, argument) {
     return new Application(abstraction, argument)
 }
-
-module.exports = { application }

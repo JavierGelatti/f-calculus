@@ -1,6 +1,6 @@
-const { primitive, application, number, letExpression, identifier, lambda, pair } = require('./ast')
+import { application, identifier, lambda, letExpression, number, pair, primitive } from './ast.js'
 
-const asNumber = primitive(anExpression => {
+export const asNumber = primitive(anExpression => {
     if (anExpression.constructor.name !== 'Lambda') {
         return anExpression
     }
@@ -28,7 +28,7 @@ const asNumber = primitive(anExpression => {
     }
 }, '<primitive: asNumber>')
 
-const makePair = lambda(identifier('first'), lambda(identifier('second'), pair(identifier('first'), identifier('second'))))
+export const makePair = lambda(identifier('first'), lambda(identifier('second'), pair(identifier('first'), identifier('second'))))
 
 const first = lambda(
     identifier('pair'),
@@ -46,7 +46,7 @@ const second = lambda(
     )
 )
 
-const asPair = primitive(anExpression => {
+export const asPair = primitive(anExpression => {
     if (anExpression.constructor.name === 'Lambda') {
         const firstValue = application(first, anExpression).betaReduced().betaReduced()
         const secondValue = application(second, anExpression).betaReduced().betaReduced()
@@ -72,12 +72,10 @@ const allPrimitives = {
     ',': makePair
 }
 
-const withPrimitiveBindings = function(expression) {
+export const withPrimitiveBindings = function(expression) {
     return Object.entries(allPrimitives).reduce(
         (previous, [primitiveName, primitive]) =>
             letExpression(identifier(primitiveName), primitive, previous),
         expression
     )
 }
-
-module.exports = { withPrimitiveBindings, ...allPrimitives }

@@ -1,6 +1,6 @@
-const { subclassResponsibility } = require('./../utils')
+import { subclassResponsibility } from '../utils.js'
 
-class Expression {
+export class Expression {
     fullBetaReduce() {
         let lastExpression = undefined
         let currentExpression = this
@@ -60,5 +60,3 @@ class Expression {
         return false
     }
 }
-
-module.exports = { Expression }

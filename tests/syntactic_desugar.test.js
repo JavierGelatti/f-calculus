@@ -1,4 +1,4 @@
-const { identifier, application, lambda, letExpression, hole, number } = require('../src/ast')
+import { application, hole, identifier, lambda, letExpression, number } from '../src/ast.js'
 
 describe('syntatic unsugaring', () => {
     test('let expressions are transformed into applications', () => {

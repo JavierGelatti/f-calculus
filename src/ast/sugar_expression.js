@@ -1,7 +1,7 @@
-const { Expression } = require('./expression')
-const { subclassResponsibility } = require('./../utils')
+import { subclassResponsibility } from '../utils.js'
+import { Expression } from './expression.js'
 
-class SugarExpression extends Expression {
+export class SugarExpression extends Expression {
     betaReduced() {
         return this.unsugar().betaReduced()
     }
@@ -22,5 +22,3 @@ class SugarExpression extends Expression {
         return this.unsugar().applyTo(argument)
     }
 }
-
-module.exports = { SugarExpression }

@@ -1,7 +1,6 @@
-
-const { SugarExpression } = require('./sugar_expression')
-const { application } = require('./application')
-const { lambda } = require('./lambda')
+import { SugarExpression } from './sugar_expression.js'
+import { application } from './application.js'
+import { lambda } from './lambda.js'
 
 class LetExpression extends SugarExpression {
     constructor(variable, value, expression) {
@@ -23,8 +22,6 @@ class LetExpression extends SugarExpression {
     }
 }
 
-function letExpression(variable, value, expression) {
+export function letExpression(variable, value, expression) {
     return new LetExpression(variable, value, expression)
 }
-
-module.exports = { letExpression }

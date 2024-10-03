@@ -1,13 +1,12 @@
-const { withPrimitiveBindings } = require('./primitives')
-const { parseExpression } = require('./parser')
-const ast = require('./ast')
+import { withPrimitiveBindings } from './primitives.js'
+import { parseExpression } from './parser.js'
 
-function evaluate(code) {
+export * as ast from './ast.js'
+
+export function evaluate(code) {
     return withPrimitiveBindings(parseExpression(code)).fullBetaReduce()
 }
 
-function parse(code) {
+export function parse(code) {
     return parseExpression(code)
 }
-
-module.exports = { evaluate, parse, ast }

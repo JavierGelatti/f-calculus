@@ -1,5 +1,5 @@
-const { execSync } = require('child_process')
-const { repl, colors: { off, bold, cyan } } = require('../src/repl')
+import { execSync } from 'child_process'
+import { colors, repl } from '../src/repl.js'
 
 describe('Read Eval Print Loop', () => {
     let output
@@ -31,7 +31,7 @@ describe('Read Eval Print Loop', () => {
         ).toString()
 
         expect(stdout).
-            toEqual(`${bold}${cyan}λ${off} 42\n${bold}${cyan}λ${off} `)
+            toEqual(`${colors.bold}${colors.cyan}λ${colors.off} 42\n${colors.bold}${colors.cyan}λ${colors.off} `)
     })
 
     function promptWithInput(...input) {

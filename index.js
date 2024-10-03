@@ -1,5 +1,7 @@
-const { repl } = require('./src/repl')
-const readline = require('readline').createInterface({
+import { createInterface } from 'readline'
+import { repl } from './src/repl.js'
+
+const readline = createInterface({
     input: process.stdin,
     output: process.stdout
 })

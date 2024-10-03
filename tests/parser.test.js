@@ -1,5 +1,5 @@
-const { identifier, application, infixApplication, lambda, letExpression, number } = require('../src/ast')
-const { parseExpression } = require('../src/parser')
+import { parseExpression } from '../src/parser.js'
+import { application, identifier, infixApplication, lambda, letExpression, number } from '../src/ast.js'
 
 describe('Parser', () => {
     test('variables', () => {

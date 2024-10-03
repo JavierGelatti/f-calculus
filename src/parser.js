@@ -1,5 +1,18 @@
-const { endOfInput, parse, digit, letter, char, choice, takeRight, recursiveParser, sequenceOf, many1, mapTo, pipeParsers, str, anyOfString, anyCharExcept, many, optionalWhitespace } = require('arcsecond')
-const { identifier, lambda, application, infixApplication, hole, letExpression, number } = require('./ast')
+import {
+    anyCharExcept,
+    anyOfString,
+    char,
+    choice,
+    digit,
+    endOfInput,
+    letter, many,
+    many1, mapTo, optionalWhitespace,
+    parse, pipeParsers,
+    recursiveParser,
+    sequenceOf, str,
+    takeRight,
+} from 'arcsecond'
+import { application, hole, identifier, infixApplication, lambda, letExpression, number } from './ast.js'
 
 const expressionParser = recursiveParser(() => pipeParsers([
     choice([letParser, infixApplicationParser, infixApplicationTermParser, infixOperatorParser])
@@ -100,7 +113,7 @@ const infixApplicationParser = pipeParsers([
     })
 ])
 
-function parseExpression(text) {
+export function parseExpression(text) {
     const completeExpression = pipeParsers([
         sequenceOf([
             expressionParser,
@@ -117,5 +130,3 @@ function parseExpression(text) {
 
     return parseResult.result
 }
-
-module.exports = { parseExpression }

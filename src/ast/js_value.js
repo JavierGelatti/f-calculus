@@ -1,5 +1,5 @@
-const { Expression } = require('./expression')
-const { application } = require('./application')
+import { Expression } from './expression.js'
+import { application } from './application.js'
 
 class JsValue extends Expression {
     constructor(jsValue, stringRepresentation = undefined) {
@@ -44,8 +44,6 @@ class JsValue extends Expression {
     }
 }
 
-function primitive(javascriptValue, stringRepresentation = undefined) {
+export function primitive(javascriptValue, stringRepresentation = undefined) {
     return new JsValue(javascriptValue, stringRepresentation)
 }
-
-module.exports = { primitive }

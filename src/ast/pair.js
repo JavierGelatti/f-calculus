@@ -1,8 +1,7 @@
-
-const { SugarExpression } = require('./sugar_expression')
-const { identifier } = require('./identifier')
-const { lambda } = require('./lambda')
-const { application } = require('./application')
+import { SugarExpression } from './sugar_expression.js'
+import { identifier } from './identifier.js'
+import { lambda } from './lambda.js'
+import { application } from './application.js'
 
 class Pair extends SugarExpression {
     constructor(first, second) {
@@ -35,8 +34,6 @@ class Pair extends SugarExpression {
     }
 }
 
-function pair(first, second) {
+export function pair(first, second) {
     return new Pair(first, second)
 }
-
-module.exports = { pair }

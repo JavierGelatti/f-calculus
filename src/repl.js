@@ -1,13 +1,14 @@
-const { evaluate, parse } = require('./f_calculus')
+import { evaluate, parse } from './f_calculus.js'
 
 // Colors and emphasis
 const off = '\x1b[0m'
 const bold = '\x1b[1m'
 const cyan = '\x1b[36m'
+export const colors = { off, bold, cyan }
 
 let backlog = ''
 
-function repl(prompt, console = global.console) {
+export function repl(prompt, console = global.console) {
     return prompt(`${bold}${cyan}λ${off} `).then(code => {
         if (code === 'exit') {
             console.log('bye!')
@@ -40,5 +41,3 @@ function validSyntax(text) {
         return false
     }
 }
-
-module.exports = { repl, colors: { off, bold, cyan } }

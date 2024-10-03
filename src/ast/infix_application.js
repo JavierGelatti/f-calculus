@@ -1,5 +1,5 @@
-const { SugarExpression } = require('./sugar_expression')
-const { application } = require('./application')
+import { SugarExpression } from './sugar_expression.js'
+import { application } from './application.js'
 
 class InfixApplication extends SugarExpression {
     constructor(operator, firstArgument, secondArgument) {
@@ -18,8 +18,6 @@ class InfixApplication extends SugarExpression {
     }
 }
 
-function infixApplication(abstraction, argument1, argument2) {
+export function infixApplication(abstraction, argument1, argument2) {
     return new InfixApplication(abstraction, argument1, argument2)
 }
-
-module.exports = { infixApplication }

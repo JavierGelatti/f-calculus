@@ -1,5 +1,5 @@
-const { identifier, application, lambda, number, pair } = require('../src/ast')
-const { asNumber, asPair, withPrimitiveBindings } = require('../src/primitives')
+import { application, identifier, lambda, number, pair } from '../src/ast.js'
+import { asNumber, asPair, withPrimitiveBindings } from '../src/primitives.js'
 
 describe('Primitives', () => {
     describe('asNumber', () => {

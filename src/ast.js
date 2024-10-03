@@ -1,11 +1,9 @@
-const { hole } = require('./ast/hole')
-const { identifier } = require('./ast/identifier')
-const { application } = require('./ast/application')
-const { lambda } = require('./ast/lambda')
-const { primitive } = require('./ast/js_value')
-const { letExpression } = require('./ast/let_expression')
-const { infixApplication } = require('./ast/infix_application')
-const { number } = require('./ast/number_literal')
-const { pair } = require('./ast/pair')
-
-module.exports = { primitive, number, identifier, letExpression, application, infixApplication, lambda, hole, pair }
+export { hole } from './ast/hole.js'
+export { identifier } from './ast/identifier.js'
+export { application } from './ast/application.js'
+export { lambda } from './ast/lambda.js'
+export { primitive } from './ast/js_value.js'
+export { letExpression } from './ast/let_expression.js'
+export { infixApplication } from './ast/infix_application.js'
+export { number } from './ast/number_literal.js'
+export { pair } from './ast/pair.js'

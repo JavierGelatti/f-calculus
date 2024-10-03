@@ -1,4 +1,5 @@
-const { identifier, application, infixApplication, lambda, letExpression, number, primitive, pair } = require('../src/ast')
+import { application, identifier, infixApplication, lambda, letExpression, number, pair, primitive } from '../src/ast.js'
+
 
 describe('Beta reduction', () => {
     test('beta reduction of a variable is the variable', () => {

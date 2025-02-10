@@ -29,7 +29,7 @@ class Lambda extends Expression {
     }
 
     alphaConvertNotToHave(notWantedIdentifiersNames) {
-        const allIdentifiers = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        const allIdentifiers = 'abcdefghijklmnopqrstuvwxyz'.split('')
         const newIdentifierName = allIdentifiers.find(v => !notWantedIdentifiersNames.includes(v))
         return this.alphaConvert(newIdentifierName)
     }

@@ -37,7 +37,7 @@ function validSyntax(text) {
     try {
         parse(text)
         return true
-    } catch (ex) {
+    } catch (_ex) {
         return false
     }
 }

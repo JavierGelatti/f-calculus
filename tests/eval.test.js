@@ -104,7 +104,7 @@ describe('Beta reduction', () => {
 
     test('auto alpha-converts to avoid unwanted captures (free vs bound while reducing round 2?)', () => {
         let abstraction = lambda(identifier('x'), lambda(identifier('y'),
-            application(identifier('x'), application(identifier('y'), identifier('a')))));
+            application(identifier('x'), application(identifier('y'), identifier('a')))))
 
         expect(
             application(

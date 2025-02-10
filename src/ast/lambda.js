@@ -20,15 +20,17 @@ class Lambda extends Expression {
         if (oldVariable.equals(this.boundVariable)) {
             return this
         } else if (includes(newValue.freeVariables(), this.boundVariable)) {
-            return this.alphaConvertNotToHave(newValue.freeVariables()).replaceFreeVariable(oldVariable, newValue)
+            return this.alphaConvertNotToHave(
+                [...newValue.freeVariables(), ...this.freeVariables()].map(identifier => identifier.name)
+            ).replaceFreeVariable(oldVariable, newValue)
         } else {
             return lambda(this.boundVariable, this.body.replaceFreeVariable(oldVariable, newValue))
         }
     }
 
-    alphaConvertNotToHave(notWantedIdentifiers) {
-        const allIdentifiers = 'abcdefghijklmnopqrstuvwxyz'.split('')//.map(v => identifier('_' + v));
-        const newIdentifierName = allIdentifiers.find(v => !includes(notWantedIdentifiers, v))
+    alphaConvertNotToHave(notWantedIdentifiersNames) {
+        const allIdentifiers = 'abcdefghijklmnopqrstuvwxyz'.split('');
+        const newIdentifierName = allIdentifiers.find(v => !notWantedIdentifiersNames.includes(v))
         return this.alphaConvert(newIdentifierName)
     }
 
